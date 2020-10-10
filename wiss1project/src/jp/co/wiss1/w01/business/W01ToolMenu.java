@@ -1,8 +1,9 @@
 package jp.co.wiss1.w01.business;
-
+​
 import java.io.IOException;
 import java.util.Scanner;
-
+import jp.co.wiss1.w01.common.W01CommonConst;
+​
 /**
 * メインメニュー用クラス
 * @author　wiss1
@@ -10,24 +11,24 @@ import java.util.Scanner;
 *
 */
 public class W01ToolMenu {
-
+​
 	/**
 	 * mainメソッド
 	 * ユーザーに入力を促し、選択された値によってクラスを呼び分ける。
 	 * クラスの結果を受け取り、メッセージを表示する
 	*/
 	public static void main(String[] args) throws IOException {
-
+​
 		Scanner scan = new Scanner(System.in);
 		// 実行結果
-		int result = 0;
+		String result = W01CommonConst.SUCCESS;
 		// メニューに戻るフラグ
 		Boolean returnFlg = false;
-
+​
 		while (true) {
 			// メニューに戻るフラグを初期化
 			returnFlg = false;
-
+​
 			System.out.println("************************");
 			System.out.println("01_ファイル変換");
 			System.out.println("02_DB関連");
@@ -52,16 +53,16 @@ public class W01ToolMenu {
 					// ユーザーに入力させる
 					str = scan.next();
 					newline(2);
-
+​
 					if ("1".equals(str)) {
 						// ファイル変換（TSV⇒CSV）
-						W01ConvertFileTsvToCsvc w01ConvertFileTsvToCsvc = new W01ConvertFileTsvToCsvc();
-						result = w01ConvertFileTsvToCsvc.main();
+						//W01ConvertFileTsvToCsvc w01ConvertFileTsvToCsvc = new W01ConvertFileTsvToCsvc();
+						//result = w01ConvertFileTsvToCsvc.main();
 						break;
 					} else if ("2".equals(str)) {
 						// ファイル変換（CSV⇒TSV）
-						W01ConvertFileCsvToTsv w01ConvertFileCsvToTsv = new W01ConvertFileCsvToTsv();
-						result = w01ConvertFileCsvToTsv.main();
+						//W01ConvertFileCsvToTsv w01ConvertFileCsvToTsv = new W01ConvertFileCsvToTsv();
+						//result = w01ConvertFileCsvToTsv.main();
 						break;
 					} else if ("3".equals(str)) {
 						System.out.println("メニュー画面に戻ります");
@@ -88,15 +89,15 @@ public class W01ToolMenu {
 					// ユーザーに入力させる
 					str = scan.next();
 					newline(2);
-
+​
 					if ("1".equals(str)) {
 						// テーブルヘッダー部取得
-						W01SelectTableHeader w01SelectTableHeader = new W01SelectTableHeader();
-//						result = w01SelectTableHeader.main();
+						//W01SelectTableHeader w01SelectTableHeader = new W01SelectTableHeader();
+						//result = w01SelectTableHeader.main();
 						break;
 					} else if ("2".equals(str)) {
 						// テーブルデータ取得
-						W01SelectTableData w01SelectTableData = new W01SelectTableData();
+						//W01SelectTableData w01SelectTableData = new W01SelectTableData();
 						//result = w01SelectTableData.main();
 						break;
 					} else if ("3".equals(str)) {
@@ -113,8 +114,8 @@ public class W01ToolMenu {
 				}
 			} else if ("3".equals(str)) {
 				// テーブルデータ取得
-				W01ShapeEvidence w01ShapeEvidence = new W01ShapeEvidence();
-				result = w01ShapeEvidence.main();
+				//W01ShapeEvidence w01ShapeEvidence = new W01ShapeEvidence();
+				//result = w01ShapeEvidence.main();
 			} else {
 				// 入力値不正
 				System.out.println("ERROE:1～3を入力してください");
@@ -125,9 +126,9 @@ public class W01ToolMenu {
 			if (returnFlg) {
 				continue;
 			}
-
+​
 			// 各クラスの戻り値によりメッセージを表示する。
-			if (result == 1) {
+			if (W01CommonConst.ERROR.equals(result)) {
 				System.out.println("処理に失敗しました");
 				newline(2);
 			} else {
@@ -138,7 +139,10 @@ public class W01ToolMenu {
 			newline(2);
 		}
 	}
-
+​
+	/*
+	 *
+	 */
 	/**
 	 * 改行用メソッド
 	 * 引数に指定された回数分改行を表示する。
@@ -149,5 +153,5 @@ public class W01ToolMenu {
 			System.out.println("");
 		}
 	}
-
+​
 }
