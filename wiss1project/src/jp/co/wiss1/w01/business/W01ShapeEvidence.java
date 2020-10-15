@@ -1,53 +1,60 @@
 package jp.co.wiss1.w01.business;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.Scanner;
 
+import jp.co.wiss1.w01.common.W01CommonConst;
 import jp.co.wiss1.w01.common.W01CommonUtil;
 
-//
+/**
+* エビデンス整形（EXCEL出力）するマクロを呼び出すクラス
+*
+* @since 2020/10/04
+* @author Soma Nakamura
+* @version 1.0.0
+*
+*/
 
 public class W01ShapeEvidence {
 
-	public static void main(String[] args) throws InterruptedException {
+	@SuppressWarnings("resource")
+	public String main() {
 
 		W01CommonUtil message = new W01CommonUtil();
 
-		InputStreamReader isr = new InputStreamReader(System.in);
-		BufferedReader br = new BufferedReader(isr);
-
 		System.out.println("csvファイルもしくはtsvファイルの格納先（絶対パス）を入力してください：");
 
+		Scanner sc = new Scanner(System.in);
+
 		//ファイルパスの取得
-		String str = null;
-		try {
-			str = br.readLine();
-			br.close();
-		} catch (IOException e) {
-			message.outMessage("E02", "ファイルの取得");
-			System.exit(1);
-		}
+		String str = sc.nextLine();
 
 		//ファイルが存在するかのチェック
 		File file = new File(str);
 		if (file.exists()) {
 		} else {
 			System.out.println("ファイルが存在しません");
-			System.exit(1);
+			return W01CommonConst.ERROR;
 		}
 
 		//ファイル名をパラメータとしてマクロに渡す
 		try {
 			Runtime rt = Runtime.getRuntime();
-			Process process = rt.exec("cmd /c cscript C:\\wiss1workspeas\\W01ShapeEvidenceMacro.vbs " + str);
+			Process process = rt.exec(W01CommonConst.COMMAND + " " + str);
 			int ret = process.waitFor();
-			message.outMessage("I02", "エビデンス成型");
-			System.exit(ret);
-		} catch (IOException ex) {
-			message.outMessage("E02", "エビデンス成型");
-			System.exit(1);
+			if (ret == 0) {
+				message.outMessage("I02", "EXCELファイルへのエビデンス成型");
+				return W01CommonConst.SUCCESS;
+			} else {
+				message.outMessage("E02", "EXCELファイルへのエビデンス成型");
+				return W01CommonConst.ERROR;
+			}
+
+		} catch (IOException | InterruptedException ex) {
+			ex.printStackTrace();
+			message.outMessage("E02", "EXCELファイルへのエビデンス成型");
+			return W01CommonConst.ERROR;
 		}
 
 	}
