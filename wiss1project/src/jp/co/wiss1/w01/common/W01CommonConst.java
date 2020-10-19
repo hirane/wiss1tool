@@ -8,7 +8,6 @@ public class W01CommonConst {
 	// 処理が異常終了した場合
 	public static final String ERROR = "1";
 
-
 	// マクロを呼び出すコマンド
-	public static final String COMMAND = "cmd /c cscript vbs\\\\W01ShapeEvidenceMacro.vbs";
+	public static final String COMMAND = "cmd /c cscript vbs\\W01ShapeEvidenceMacro.vbs";
 }
