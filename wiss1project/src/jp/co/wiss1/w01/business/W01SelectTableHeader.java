@@ -11,154 +11,218 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
+import jp.co.wiss1.common.WISS1CommonUtil;
+import jp.co.wiss1.w01.common.W01CommonConst;
 import jp.co.wiss1.w01.common.W01CommonUtil;
 
+/*
+ * TableHeaderの取得
+ * @author shima
+ * 2020/10/02
+ * 1.1
+ */
+
+// 共通関数クラス
 public class W01SelectTableHeader {
+    /**
+     * クラス概要
+     *
+     * @author shima
+     * @version 1.0.0
+     */
+    public static WISS1CommonUtil commUtil = new WISS1CommonUtil();
 
-	public static void main(String[] args) throws SQLException {
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rset = null;
 
-		//接続文字列
-		String url = "jdbc:postgresql://localhost:5432/postgres";
-		String user = "postgres";
-		String password = "wanima123";
+    public String main() {
+        Connection conn = null;
+        ResultSet rset = null;
 
-		try {
-			// DBへのコネクションを作成する
-			conn = DriverManager.getConnection(url, user, password);
+        //接続文字列
+        String url = commUtil.getProperty("DBURL"); // 接続パス
+        String user = commUtil.getProperty("DBUSER"); // ログインID
+        String password = commUtil.getProperty("DBPASS"); // ログインパスワード
 
-			Scanner sc = new Scanner(System.in);
+        try {
+            // DBへのコネクションを作成する
+            conn = DriverManager.getConnection(url, user, password);
 
-			System.out.println("01：社員情報");
-			System.out.println("02：部署コード");
-			System.out.println("03：役職コード");
+            Scanner sc = new Scanner(System.in);
 
-			System.out.println("取得したいテーブルを選択してください：");
+            //3つのヘッダのどれかを選択させる
+            System.out.println(W01CommonConst.TBL_NM_ONE);
+            System.out.println(W01CommonConst.TBL_NM_TWO);
+            System.out.println(W01CommonConst.TBL_NM_THREE);
 
-			int code = sc.nextInt();
+            System.out.println("取得したいテーブルを選択してください：");
 
-			switch (code) {
+            int code = sc.nextInt();
 
-			case 01:
-				// 社員情報テーブルの値を取得するメソッドを呼び出す
-				division_code(conn);
-				break;
+            switch (code) {
 
-			case 02:
-				// 部署コードテーブルの値を取得するメソッドを呼び出す
-				post_code(conn);
-				break;
+            case 01:
+                // 社員情報テーブルの値を取得するメソッドを呼び出す
+                String num01 = getTableData(conn, W01CommonConst.TBL_NM_EMPLOYEE, rset);
+                if (num01.equals(1)) {
+                    return "1";
+                }
+                return "0";
 
-			case 03:
-				// 役職コードテーブルの値を取得するメソッドを呼び出す
-				t_employee_datas(conn);
-				break;
+            case 02:
+                // 部署コードテーブルの値を取得するメソッドを呼び出す
+                String num02 = getTableData(conn, W01CommonConst.TBL_NM_DIVISION, rset);
+                if (num02.equals(1)) {
+                    return "1";
+                }
+                return "0";
 
-			// 1~3以外ならバッチに戻り値1を返す
-			default:
-				System.err.println(1);
-				System.out.println("01~03で入力してください");
+            case 03:
+                //役職コードテーブルの値を取得するメソッドを呼び出す
+                String num03 = getTableData(conn, W01CommonConst.TBL_NM_POST, rset);
+                if (num03.equals(1)) {
+                    return "1";
+                }
+                return "0";
 
-				//table呼び出し失敗メッセージ
-				W01CommonUtil messege = new W01CommonUtil();
-				messege.outMessage("E02", "TBL呼び出し");
-				return;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+            // 1~3以外ならバッチに戻り値1を返す
+            default:
+                System.out.println("01~03で入力してください");
 
-		} finally {
+                //table呼び出し失敗メッセージ
+                W01CommonUtil messege = new W01CommonUtil();
+                messege.outMessage("E02", "TBL呼び出し");
+                return "1";
+            }
 
-			//接続を切断する
-			if (rset != null) {
-				rset.close();
-			}
-			if (stmt != null) {
-				stmt.close();
-			}
-			if (conn != null) {
-				conn.close();
-			}
-		}
-	}
+            //DB接続失敗時に異常終了のメッセージを表示「
+        } catch (SQLException e) {
+            e.printStackTrace();
+            W01CommonUtil messege = new W01CommonUtil();
+            messege.outMessage("E02", "DB接続");
+            return "1";
 
-	public static void division_code(Connection conn) throws SQLException {
-		DatabaseMetaData dbmd = conn.getMetaData();
-		String table = "division_code";
+        } finally {
 
-		String types[] = { "TABLE" };
-		ResultSet rs = dbmd.getTables(null, null, table, types);
+            //接続を切断する
+            if (rset != null) {
+                try {
+                    rset.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    W01CommonUtil messege = new W01CommonUtil();
+                    messege.outMessage("E02", "DB接続");
+                    return "1";
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    W01CommonUtil messege = new W01CommonUtil();
+                    messege.outMessage("E02", "DB接続");
+                    return "1";
+                }
+            }
+        }
+    }
 
-		exportCsv(table, rs, dbmd);
-	}
+    /**
+     * Tableの情報を取得しCsvファイルを出力すむメソッドを呼び出す
+     * @param
+     * @return
+     */
+    private static String getTableData(Connection conn, String table, ResultSet rset)
+            throws SQLException {
+        DatabaseMetaData dbmd = conn.getMetaData();
 
-	public static void post_code(Connection conn) throws SQLException {
-		DatabaseMetaData dbmd = conn.getMetaData();
-		String table = "post_code";
+        String types[] = { "TABLE" };
+        //渡されたカタログ、スキーマ、テーブル名のパターンで使用可能なテーブルの記述を取得します。
+        rset = dbmd.getTables(null, null, table, types);
 
-		String types[] = { "TABLE" };
-		ResultSet rs = dbmd.getTables(null, null, table, types);
+        String num = exportCsv(rset, dbmd);
+        if (num.equals(1)) {
+            return "1";
+        }
+        return "0";
+    }
 
-		exportCsv(table, rs, dbmd);
-	}
+    /**
+     * テーブルヘッダーをCsvファイルへ出力するメソッド
+     * @param
+     * @return
+     */
+    private static String exportCsv(ResultSet rs, DatabaseMetaData dbmd) {
 
-	public static void t_employee_datas(Connection conn) throws SQLException {
-		DatabaseMetaData dbmd = conn.getMetaData();
-		String table = "t_employee_datas";
+        //現在時刻の取得
+        Date date = new Date();
 
-		String types[] = { "TABLE" };
-		ResultSet rs = dbmd.getTables(null, null, table, types);
+        //フォーマットを設定
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
 
-		exportCsv(table, rs, dbmd);
-	}
+        //日時情報を指定フォーマットの文字列で取得
+        String display = format.format(date);
 
-	public static void exportCsv(String table, ResultSet rs, DatabaseMetaData dbmd) throws SQLException {
+        // 出力ファイルの作成
+        //		FileWriter f;
+        try {
 
-		//現在時刻の取得
-		Date date = new Date();
+            while (rs.next()) {
+                //テーブル名を取得
+                String tableName = rs.getString("TABLE_NAME");
 
-		//フォーマットを設定
-		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+                //取得したColumnsを格納していく変数
+                StringBuffer sb = new StringBuffer();
 
-		//日時情報を指定フォーマットの文字列で取得
-		String display = format.format(date);
+                //ファイル格納先
+                String FilePlace = commUtil.getProperty("PATH");
 
-		// 出力ファイルの作成
-		//		FileWriter f;
-		try {
-			//指定のファイル名を生成
-			File file = new File("C:\\wiss1workspeas\\" + table + "header" + display + ".csv");
+                //指定のファイル名を生成
+                File fInputCsv = new File(FilePlace + tableName + "header" + display + ".csv");
 
-			PrintWriter p = new PrintWriter(
-					new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "Shift-JIS")));
+                //指定された名前のファイルに書き込むためのファイル出力ストリームを作成します。
+                FileOutputStream FileOutput = new FileOutputStream(fInputCsv);
+                PrintWriter pWriter =
+                        new PrintWriter(new BufferedWriter(new OutputStreamWriter(FileOutput)));
 
-			while (rs.next()) {
-				String tableName = rs.getString("TABLE_NAME");
-				ResultSet rs2 = dbmd.getColumns(null, null, tableName, "%");
+                //tableのヘッダ内容を取得
+                ResultSet rsColumns = dbmd.getColumns(null, null, tableName, "%");
 
-				while (rs2.next()) {
-					//ファイルに書き込む
-					p.write(rs2.getString("COLUMN_NAME") + ",");
-				}
-			}
-			// ファイルに書き出し閉じる
-			p.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			//出力失敗メッセージ
-			W01CommonUtil messege = new W01CommonUtil();
-			messege.outMessage("E02", "CSV出力");
-		}
-		//正常終了メッセージ
-		W01CommonUtil messege = new W01CommonUtil();
-		messege.outMessage("I01", "正常終了しました。");
-	}
+                //一件ずつループでヘッダーを取得
+                while (rsColumns.next()) {
+
+                    //指定されたヘッダーと、区切りのカンマを格納
+                    sb.append(rsColumns.getString("COLUMN_NAME"));
+                    sb.append(",");
+
+                }
+
+                String columName = sb.toString();
+                //最後のカンマを除く処理
+                columName = columName.substring(0, columName.length() - 1);
+
+                //ファイルへ書き出し
+                pWriter.write(columName);
+
+                // ファイルに書き出し閉じる
+                pWriter.close();
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+
+            //出力失敗メッセージ
+            W01CommonUtil messege = new W01CommonUtil();
+            messege.outMessage("E02", "CSVファイル出力");
+            return "1";
+
+        }
+        //正常終了メッセージ
+        W01CommonUtil messege = new W01CommonUtil();
+        messege.outMessage("I01", "ファイルへの出力");
+        return "0";
+    }
 
 }
