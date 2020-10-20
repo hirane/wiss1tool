@@ -20,7 +20,6 @@ public class W01ToolMenu {
      * クラスの結果を受け取り、メッセージを表示する
      * @param args
      */
-    @SuppressWarnings("resource")
     public static void main(String[] args) throws IOException {
 
         Scanner scan = new Scanner(System.in);
@@ -60,12 +59,14 @@ public class W01ToolMenu {
 
                     if ("1".equals(str)) {
                         // ファイル変換（TSV⇒CSV）
-                        W01ConvertFileTsvToCsv w01ConvertFileTsvToCsv = new W01ConvertFileTsvToCsv();
-                        result = w01ConvertFileTsvToCsv.main();
+                        W01ConvertFileTsvToCsvc w01ConvertFileTsvToCsvc =
+                                new W01ConvertFileTsvToCsvc();
+                        result = w01ConvertFileTsvToCsvc.main();
                         break;
                     } else if ("2".equals(str)) {
                         // ファイル変換（CSV⇒TSV）
-                        W01ConvertFileCsvToTsv w01ConvertFileCsvToTsv = new W01ConvertFileCsvToTsv();
+                        W01ConvertFileCsvToTsv w01ConvertFileCsvToTsv =
+                                new W01ConvertFileCsvToTsv();
                         result = w01ConvertFileCsvToTsv.main();
                         break;
                     } else if ("3".equals(str)) {
@@ -154,4 +155,5 @@ public class W01ToolMenu {
             System.out.println("");
         }
     }
+
 }

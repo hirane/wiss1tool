@@ -82,5 +82,6 @@ public class W01CommonConst {
     /**
      * コマンド
      */
-    public static final String COMMAND = "cmd /c cscript vbs\\W01ShapeEvidenceMacro.vbs";
+    public static final String COMMAND =
+            "cmd /c cscript C:\\\\wiss1workspeas\\\\W01ShapeEvidenceMacro.vbs";
 }

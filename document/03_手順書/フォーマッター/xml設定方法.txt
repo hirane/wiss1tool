@@ -1,0 +1,7 @@
+【wiss1style.xml】
+eqlipse上にて「ウィンドウ」⇒「設定」⇒「Java」⇒「コード・スタイル」⇒「フォーマッター」⇒「インポート」を選択し、wiss1style.xmlをセットし「適用」。
+⇒Ctrl+Shift+Fのショートカットを実行するとソースがフォーマットされる。
+
+【codetemplates.xml】
+eqlipse上にて「ウィンドウ」⇒「設定」⇒「Java」⇒「コード・スタイル」⇒「コード・テンプレート」⇒「コメント」⇒「インポート」を選択し、codetemplates.xmlをセットし「適用」。
+⇒クラスやメソッドの記載行でAlt+Shift+Jのショートカットを実行するとJavadoc枠が生成される。
