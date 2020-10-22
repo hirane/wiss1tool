@@ -33,9 +33,9 @@ public class W01ToolMenu {
             returnFlg = false;
 
             System.out.println("************************");
-            System.out.println("01_ファイル変換");
-            System.out.println("02_DB関連");
-            System.out.println("03_エビデンス成型");
+            System.out.println("1_ファイル変換");
+            System.out.println("2_DB関連");
+            System.out.println("3_エビデンス成型");
             System.out.println("1～3を選択してください:");
             System.out.println("************************");
             newline(2);
@@ -47,9 +47,9 @@ public class W01ToolMenu {
                 while (true) {
                     System.out.println("************************");
                     System.out.println("ファイル変換を行います");
-                    System.out.println("01_TSV⇔CSV");
-                    System.out.println("02_CSV⇔TSV");
-                    System.out.println("03_ニュー画面に戻る");
+                    System.out.println("1_TSV⇔CSV");
+                    System.out.println("2_CSV⇔TSV");
+                    System.out.println("3_メニュー画面に戻る");
                     System.out.println("1～3を選択してください:");
                     System.out.println("************************");
                     newline(2);
@@ -59,9 +59,9 @@ public class W01ToolMenu {
 
                     if ("1".equals(str)) {
                         // ファイル変換（TSV⇒CSV）
-                        W01ConvertFileTsvToCsvc w01ConvertFileTsvToCsvc =
-                                new W01ConvertFileTsvToCsvc();
-                        result = w01ConvertFileTsvToCsvc.main();
+                        W01ConvertFileTsvToCsv w01ConvertFileTsvToCsv =
+                                new W01ConvertFileTsvToCsv();
+                        result = w01ConvertFileTsvToCsv.main();
                         break;
                     } else if ("2".equals(str)) {
                         // ファイル変換（CSV⇒TSV）
@@ -85,9 +85,9 @@ public class W01ToolMenu {
                 while (true) {
                     System.out.println("************************");
                     System.out.println("DB関連情報を取得します");
-                    System.out.println("01_テーブルヘッダー部取得");
-                    System.out.println("02_データ取得");
-                    System.out.println("03_ニュー画面に戻る");
+                    System.out.println("1_テーブルヘッダー部取得");
+                    System.out.println("2_データ取得");
+                    System.out.println("3_メニュー画面に戻る");
                     System.out.println("1～3を選択してください:");
                     System.out.println("************************");
                     newline(2);
