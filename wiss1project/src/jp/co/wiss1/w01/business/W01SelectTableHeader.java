@@ -59,11 +59,11 @@ public class W01SelectTableHeader {
 
             System.out.println("取得したいテーブルを選択してください：");
 
-            int code = sc.nextInt();
+            String code = sc.nextLine();
 
             switch (code) {
 
-            case 01:
+            case "01":
                 // 社員情報テーブルの値を取得するメソッドを呼び出す
                 String num01 = getTableData(conn, W01CommonConst.TBL_NM_EMPLOYEE, rset);
                 if (num01.equals(1)) {
@@ -71,7 +71,7 @@ public class W01SelectTableHeader {
                 }
                 return "0";
 
-            case 02:
+            case "02":
                 // 部署コードテーブルの値を取得するメソッドを呼び出す
                 String num02 = getTableData(conn, W01CommonConst.TBL_NM_DIVISION, rset);
                 if (num02.equals(1)) {
@@ -79,7 +79,7 @@ public class W01SelectTableHeader {
                 }
                 return "0";
 
-            case 03:
+            case "03":
                 //役職コードテーブルの値を取得するメソッドを呼び出す
                 String num03 = getTableData(conn, W01CommonConst.TBL_NM_POST, rset);
                 if (num03.equals(1)) {
