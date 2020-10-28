@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -18,7 +17,6 @@ import java.util.Scanner;
 import jp.co.wiss1.common.WISS1CommonUtil;
 import jp.co.wiss1.w01.common.W01CommonConst;
 import jp.co.wiss1.w01.common.W01CommonUtil;
-
 
 /**
  * テーブルからデータを取得、CSVファイル出力に出力するクラス
@@ -38,7 +36,7 @@ public class W01SelectTableData {
      * @return "1"or"0"
      * @see WISS1CommonUtil
      */
-    public  String main() {
+    public String main() {
         // 01：社員情報
         System.out.println(W01CommonConst.TBL_NM_ONE);
         // 02：部署コード
@@ -73,7 +71,6 @@ public class W01SelectTableData {
     private static String selectData(String num) throws SQLException {
         // 変数定義
         Connection connection = null;
-        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         java.sql.Statement statement = null;
 
@@ -120,7 +117,7 @@ public class W01SelectTableData {
                 // データが無い場合
                 if (1 > dateNumber) {
                     W01CommonUtil messege = new W01CommonUtil();
-                    messege.outMessage("E02", "TBLデータ取得");
+                    messege.outMessage("E03", "TBLデータ");
                     // 異常終了の場合は1を返す
                     return W01CommonConst.ERROR;
                 }
@@ -148,8 +145,8 @@ public class W01SelectTableData {
                 // クローズ処理
                 if (resultSet != null)
                     resultSet.close();
-                if (preparedStatement != null)
-                    preparedStatement.close();
+                if (statement != null)
+                    statement.close();
                 if (connection != null)
                     connection.close();
             }
@@ -190,7 +187,7 @@ public class W01SelectTableData {
                 // データが無い場合
                 if (1 > dateNumber) {
                     W01CommonUtil messege = new W01CommonUtil();
-                    messege.outMessage("E02", "TBLデータ取得");
+                    messege.outMessage("E03", "TBLデータ");
                     // 異常終了の場合は1を返す
                     return W01CommonConst.ERROR;
                 }
@@ -219,8 +216,8 @@ public class W01SelectTableData {
                 // クローズ処理
                 if (resultSet != null)
                     resultSet.close();
-                if (preparedStatement != null)
-                    preparedStatement.close();
+                if (statement != null)
+                    statement.close();
                 if (connection != null)
                     connection.close();
             }
@@ -262,7 +259,7 @@ public class W01SelectTableData {
                 // データが無い場合
                 if (1 > dateNumber) {
                     W01CommonUtil messege = new W01CommonUtil();
-                    messege.outMessage("E02", "TBLデータ取得");
+                    messege.outMessage("E03", "TBLデータ");
                     // 異常終了の場合は1を返す
                     return W01CommonConst.ERROR;
                 }
@@ -290,8 +287,8 @@ public class W01SelectTableData {
                 // クローズ処理
                 if (resultSet != null)
                     resultSet.close();
-                if (preparedStatement != null)
-                    preparedStatement.close();
+                if (statement != null)
+                    statement.close();
                 if (connection != null)
                     connection.close();
             }
@@ -331,7 +328,8 @@ public class W01SelectTableData {
 
             String path = commUtil.getProperty("OUTPUTPATH"); // ログインパスワード
 
-            FileWriter fileWriter = new FileWriter(path + fileName + "." + W01CommonConst.CONST_EXTENSION_CSV);
+            FileWriter fileWriter =
+                    new FileWriter(path + fileName + "." + W01CommonConst.CONST_EXTENSION_CSV);
 
             PrintWriter printWriter = new PrintWriter(new BufferedWriter(fileWriter));
 
@@ -365,7 +363,7 @@ public class W01SelectTableData {
                                 printWriter.print(clmn);
                             } else {
                                 printWriter.print(clmn);
-                             // データの間にカンマを挿入
+                                // データの間にカンマを挿入
                                 printWriter.print(W01CommonConst.CONST_ST_COMMA);
                             }
 
