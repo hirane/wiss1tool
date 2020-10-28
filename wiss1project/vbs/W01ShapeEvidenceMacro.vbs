@@ -62,11 +62,27 @@ Do Until objReadStream.EOS
     
     
     If InStr(strReadFilePath, ".csv") > 0 then
-        'カンマで文字列を区切る
-        strLine = Split(line, ",")
+        If InStr(line, Chr(9)) <> 0 then
+            objXls.DisplayAlerts = False
+            objReadStream.Close
+            objBook.close
+            objXls.Quit()
+            Wscript.Quit(1)
+        Else
+            ' カンマで文字列を区切る
+            strLine = Split(line, ",")
+        End If
     ElseIf InStr(strReadFilePath, ".tsv") > 0 then
-        'タブで文字列を区切る
-        strLine = Split(line, Chr(9))
+        If InStr(line, ",")  <> 0 then
+            objXls.DisplayAlerts = False
+            objReadStream.Close
+            objBook.close
+            objXls.Quit()
+            Wscript.Quit(1)
+        Else
+            ' タブで文字列を区切る
+            strLine = Split(line, Chr(9))
+        End If
     End If
   
     for i = 0 to Ubound(strLine)
@@ -85,14 +101,24 @@ Do Until objReadStream.EOS
         objSheet.columns(iCol).AutoFit()
         iCol = iCol + 1
     Next
-  
+
     iRow = iRow + 1
-  
+
 Loop
 
+' パスの設定
 saveFilePath  = "C:\wiss1workspeas\aftermolding\"
 
+' ファイル名の取得
 fileName = objFso.GetBaseName(strReadFilePath)
+
+If objFso.FileExists(saveFilePath & fileName & ".xlsx") then
+    objXls.DisplayAlerts = False
+    objReadStream.Close
+    objBook.close
+    objXls.Quit()
+    Wscript.Quit(1)
+End If
 
 objXls.DisplayAlerts = False
 

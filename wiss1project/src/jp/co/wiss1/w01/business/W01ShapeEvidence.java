@@ -36,6 +36,22 @@ public class W01ShapeEvidence {
             return W01CommonConst.ERROR;
         }
 
+        //空ファイルかどうかのチェック
+        if (file.length() == 0) {
+            message.outMessage("E02", "EXCELファイルへのエビデンス成型");
+            return W01CommonConst.ERROR;
+        }
+
+        //拡張子の確認
+        String name = file.getName();
+        String extension = name.substring(name.lastIndexOf("."));
+        if (extension.equals(".csv") || extension.equals(".tsv")) {
+        } else {
+            System.out.println(extension);
+            message.outMessage("E02", "EXCELファイルへのエビデンス成型");
+            return W01CommonConst.ERROR;
+        }
+
         //ファイル名をパラメータとしてマクロに渡す
         try {
             Runtime rt = Runtime.getRuntime();
