@@ -47,7 +47,6 @@ public class W01ShapeEvidence {
         String extension = name.substring(name.lastIndexOf("."));
         if (extension.equals(".csv") || extension.equals(".tsv")) {
         } else {
-            System.out.println(extension);
             message.outMessage("E02", "EXCELファイルへのエビデンス成型");
             return W01CommonConst.ERROR;
         }
