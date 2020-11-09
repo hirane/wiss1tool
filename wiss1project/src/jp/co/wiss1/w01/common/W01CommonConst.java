@@ -22,12 +22,12 @@ public class W01CommonConst {
     /**
      * CSVファイル拡張子
      */
-    public static final String CONST_EXTENSION_CSV = "csv";
+    public static final String CONST_EXTENSION_CSV = ".csv";
 
     /**
      * TSVファイル拡張子
      */
-    public static final String CONST_EXTENSION_TSV = "tsv";
+    public static final String CONST_EXTENSION_TSV = ".tsv";
 
     /**
      * UTF-8
@@ -40,24 +40,45 @@ public class W01CommonConst {
     public static final String CONST_ST_COMMA = ",";
 
     /**
+     * ピリオド
+     */
+    public static final String CONST_ST_PERIOD = ".";
+
+
+    /**
      * タブ
      */
     public static final String CONST_ST_TAB = "\t";
 
     /**
-     * テーブル選択肢_01
+     * テーブル選択肢_1
      */
-    public static final String TBL_NM_ONE = "01：社員情報";
+    public static final String TBL_NM_ONE = "1：社員情報";
 
     /**
-     * テーブル選択肢_02
+     * テーブル選択肢_2
      */
-    public static final String TBL_NM_TWO = "02：部署コード";
+    public static final String TBL_NM_TWO = "2：部署コード";
 
     /**
-     * テーブル選択肢_03
+     * テーブル選択肢_3
      */
-    public static final String TBL_NM_THREE = "03：役職コード";
+    public static final String TBL_NM_THREE = "3：役職コード";
+
+    /**
+     * テーブル選択肢_1（ユーザが指定した選択肢）
+     */
+    public static final String TBL_CH_ONE = "1";
+
+    /**
+     * テーブル選択肢_2（ユーザが指定した選択肢）
+     */
+    public static final String TBL_CH_TWO = "2";
+
+    /**
+     * テーブル選択肢_3（ユーザが指定した選択肢）
+     */
+    public static final String TBL_CH_THREE = "3";
 
     /**
      * テーブル名_社員情報
@@ -83,4 +104,80 @@ public class W01CommonConst {
      * コマンド
      */
     public static final String COMMAND = "cmd /c cscript vbs\\W01ShapeEvidenceMacro.vbs";
+
+    /**
+     * 日付
+     */
+    public static final String DATE = "yyyyMMddHHmmss";
+
+    /**
+     * テーブル名
+     */
+    public static final String TABLE_NAME = "TABLE_NAME";
+
+    /**
+     * パス
+     */
+    public static final String PATH = "PATH";
+
+    /**
+     * ヘッダー
+     */
+    public static final String FILE_NM_HEADER = "header";
+
+    /**
+     * データ
+     */
+    public static final String FILE_NM_DATA = "_data_";
+
+    /**
+     * パーセント
+     */
+    public static final String CONST_ST_ = "%";
+
+    /**
+     * カラム名
+     */
+    public static final String COLUMN_NAME = "COLUMN_NAME";
+
+    /**
+     * プロパティファイルのDBのURL
+     */
+    public static final String PRO_DB_URL = "DBURL";
+
+    /**
+     * プロパティファイルのDBのユーザ名
+     */
+    public static final String PRO_DB_USER = "DBUSER";
+
+    /**
+     * プロパティファイルのDBパス
+     */
+    public static final String PRO_DB_PASS = "DBPASS";
+
+    /**
+     * プロパティファイルのDBテーブル名
+     */
+    public static final String PRO_DB_TABLE = "TABLE";
+
+    /**
+     * プロパティファイルのDBドライバー
+     */
+    public static final String PRO_DB_DRIVER = "org.postgresql.Driver";
+
+    /**
+     * プロパティファイルのアウトプットパス
+     */
+    public static final String PRO_OUT_PATH = "OUTPUTPATH";
+
+    /**
+     * 数値0
+     */
+    public static final int NUM_ZERO = 0;
+
+    /**
+     * 数値1
+     */
+    public static final int NUM_ONE = 1;
+
 }
