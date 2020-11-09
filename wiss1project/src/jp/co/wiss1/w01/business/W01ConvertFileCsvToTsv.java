@@ -16,61 +16,70 @@ import jp.co.wiss1.w01.common.W01CommonUtil;
 /**
  * クラス概要 CSVファイルからTSVファイルへの書き換え
  *
+ * @author m-nishikawa
  * @since 2020/10/02
- * @author Nishikawa Miyuko
- * @version 1.0.0
+ * @version 1.0
  */
 public class W01ConvertFileCsvToTsv {
 
 	/**
 	 * CSVファイルからTSVファイルへの書き換え
-	 * @param
+	 * @param なし
 	 * @return 処理結果を返却する
 	 */
+	@SuppressWarnings("resource")
 	public String main() {
 
 		W01CommonUtil message = new W01CommonUtil();
 
 		try {
 			// CSVファイルのパスを取得
-			System.out.println("ファイルの格納先（絶対パス）を入力ください：");
+			message.outMessage("I03", "ファイルの格納先（絶対パス）");
 			Scanner scan = new Scanner(System.in);
-			String readFile = scan.next();
-			String createFile = readFile.replace(W01CommonConst.CONST_EXTENSION_CSV,
+			String inputPath = scan.next();
+			String createFile = inputPath.replace(W01CommonConst.CONST_EXTENSION_CSV,
 					W01CommonConst.CONST_EXTENSION_TSV);
 
 			// ファイルがあるかの確認：無い場合⇒エラーを返す
-			File file = new File(readFile);
-			if (file.exists()) {
-			} else {
-				message.outMessage("I03", "正しい格納先（絶対パス）");
-				return W01CommonConst.ERROR;
-			}
+			//File file = new File(inputPath);
+			//if (file.exists()) {
+			//} else {
+				//message.outMessage("I03", "正しい格納先（絶対パス）");
+				//return W01CommonConst.ERROR;
+			//}
 
 			// CSVファイルの読み込み
-			File fInputCsv = new File(readFile);
+			File fInputCsv = new File(inputPath);
 			BufferedReader br = new BufferedReader(new FileReader(fInputCsv));
 
-			// 読み込んだファイルの拡張子の判断：TSVファイルを入力された場合⇒エラーを返す
-			String name = fInputCsv.getName();
-			String extension = name.substring(name.lastIndexOf("."));
+			//読み込んだファイルの拡張子の判断：TSVファイルを入力された場合⇒エラーを返す
+			//String name = fInputCsv.getName();
+			//String extension = name.substring(name.lastIndexOf(W01CommonConst.CONST_ST_PERIOD));
 
-			if (".tsv".equals(extension)) {
-				br.close();
-				message.outMessage("I03", "CSVファイルを");
+			//if (extension.equals(W01CommonConst.CONST_EXTENSION_TSV)) {
+				//br.close();
+				//message.outMessage("I03", "CSVファイル");
+				//return W01CommonConst.ERROR;
+			//}
+
+
+			//ファイルのチェックメソッド （0：正常、1：拡張子エラー、2:ファイルなしエラー、3:ファイル0バイトエラー）
+			String extension = W01CommonConst.CONST_EXTENSION_CSV;
+
+			if (W01CommonUtil.checkInputPath(inputPath, extension) == W01CommonConst.FCHECK_ERROR_EXT) {
+				message.outMessage("I03", extension + "ファイル");
 				return W01CommonConst.ERROR;
-			}
-
-			// ファイル内にデータがあるかの確認：データが空の場合⇒エラーを返す
-			File branchFile = new File(readFile);
-			if (branchFile.length() == 0) {
+			}else if(W01CommonUtil.checkInputPath(inputPath, extension) == W01CommonConst.FCHECK_ERROR_EXS) {
+				message.outMessage("I03", "正しい格納先（絶対パス）");
+				return W01CommonConst.ERROR;
+			}else if(W01CommonUtil.checkInputPath(inputPath, extension) == W01CommonConst.FCHECK_ERROR_EMP) {
 				message.outMessage("E03", "ファイル内にデータ");
 				return W01CommonConst.ERROR;
 			}
 
 			// TSVファイルを出力
 			FileOutputStream fos = new FileOutputStream(createFile);
-			OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+			OutputStreamWriter osw = new OutputStreamWriter(fos, W01CommonConst.CONST_CHAR_CODE_UTF8);
 			PrintWriter pOutputTsv = new PrintWriter(new BufferedWriter(osw));
 
 			// ファイル書き換え
