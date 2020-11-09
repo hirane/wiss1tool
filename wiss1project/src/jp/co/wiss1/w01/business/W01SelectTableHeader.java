@@ -140,7 +140,7 @@ public class W01SelectTableHeader {
             throws SQLException {
         DatabaseMetaData dbmd = conn.getMetaData();
 
-        String types[] = { W01CommonConst.TABLE };
+        String types[] = { W01CommonConst.PRO_DB_TABLE };
         //渡されたカタログ、スキーマ、テーブル名のパターンで使用可能なテーブルの記述を取得します。
         rset = dbmd.getTables(null, null, table, types);
 
