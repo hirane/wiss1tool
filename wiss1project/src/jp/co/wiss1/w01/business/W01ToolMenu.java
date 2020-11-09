@@ -8,9 +8,9 @@ import jp.co.wiss1.w01.common.W01CommonConst;
 /**
  * メインメニュー用クラス
  *
- * @since 2020.10.18
- * @author wiss1
- * @version 1.0.0
+ * @since 2020/10/18
+ * @author s-miyazaki
+ * @version 1.0
  */
 public class W01ToolMenu {
 
@@ -19,7 +19,9 @@ public class W01ToolMenu {
      * ユーザーに入力を促し、選択された値によってクラスを呼び分ける。
      * クラスの結果を受け取り、メッセージを表示する
      * @param args
+     * @return なし
      */
+    @SuppressWarnings("resource")
     public static void main(String[] args) throws IOException {
 
         Scanner scan = new Scanner(System.in);
@@ -59,14 +61,12 @@ public class W01ToolMenu {
 
                     if ("1".equals(str)) {
                         // ファイル変換（TSV⇒CSV）
-                        W01ConvertFileTsvToCsv w01ConvertFileTsvToCsv =
-                                new W01ConvertFileTsvToCsv();
+                        W01ConvertFileTsvToCsv w01ConvertFileTsvToCsv = new W01ConvertFileTsvToCsv();
                         result = w01ConvertFileTsvToCsv.main();
                         break;
                     } else if ("2".equals(str)) {
                         // ファイル変換（CSV⇒TSV）
-                        W01ConvertFileCsvToTsv w01ConvertFileCsvToTsv =
-                                new W01ConvertFileCsvToTsv();
+                        W01ConvertFileCsvToTsv w01ConvertFileCsvToTsv = new W01ConvertFileCsvToTsv();
                         result = w01ConvertFileCsvToTsv.main();
                         break;
                     } else if ("3".equals(str)) {
@@ -146,14 +146,15 @@ public class W01ToolMenu {
     }
 
     /**
-     * 改行用メソッド
-     * 引数に指定された回数分改行を表示する。
-     * @param count 改行を行う回数
+     * 改行出力メソッド
+     * 引数に指定された回数分改行を出力する。
+     *
+     * @param int（改行を行う回数）
+     * @return なし
     */
     public static void newline(int count) throws IOException {
         for (int i = 0; i < count; i++) {
             System.out.println("");
         }
     }
-
 }
