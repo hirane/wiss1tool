@@ -16,139 +16,128 @@ import jp.co.wiss1.w01.common.W01CommonConst;
 import jp.co.wiss1.w01.common.W01CommonUtil;
 
 /**
- * W01ConvertFileTsvToCsvc
+ * tsvã‹ã‚‰csvã®å¤‰æ›ã‚’è¡Œã†
  *
- * tsv‚©‚çcsv‚Ì•ÏŠ·‚ğs‚¤
- *
- * @author hara
- * @varsion
+ * @author a-hara
+ * @since 2020/10/04
+ * @varsion 1.0
  *
  */
 public class W01ConvertFileTsvToCsv {
 
-    private static W01CommonUtil message = new W01CommonUtil();
+	private static W01CommonUtil message = new W01CommonUtil();
 
-    /**
-     * main
-     *
-     * ƒƒCƒ“ˆ—
-     *
-     * @return ˆ—Œ‹‰Ê‚ğ•Ô‹p‚·‚é 0:³íI—¹ 1:ˆÙíI—¹
-     */
-    @SuppressWarnings("resource")
-    public String main() {
+	/**
+	 * ãƒ¡ã‚¤ãƒ³å‡¦ç†
+	 *
+	 * @return å‡¦ç†çµæœã‚’è¿”å´ã™ã‚‹ 0:æ­£å¸¸çµ‚äº† 1:ç•°å¸¸çµ‚äº†
+	 */
+	@SuppressWarnings("resource")
+	public String main() {
 
-        System.out.println("ƒtƒ@ƒCƒ‹‚ÌŠi”[æiâ‘ÎƒpƒXj‚ğ“ü—Í‚­‚¾‚³‚¢F");
-        Scanner scan = new Scanner(System.in);
-        // ƒ†[ƒU[“ü—Í
-        String readFile = scan.next();
+		System.out.println("ãƒ•ã‚¡ã‚¤ãƒ«ã®æ ¼ç´å…ˆï¼ˆçµ¶å¯¾ãƒ‘ã‚¹ï¼‰ã‚’å…¥åŠ›ãã ã•ã„ï¼š");
+		Scanner scan = new Scanner(System.in);
+		// ãƒ¦ãƒ¼ã‚¶ãƒ¼å…¥åŠ›
+		String readFile = scan.next();
+		// ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒã‚§ãƒƒã‚¯
+		int inFile = W01CommonUtil.checkInputPath(readFile,
+				W01CommonConst.CONST_EXTENSION_TSV);
+		if (inFile == W01CommonConst.FCHECK_ERROR_EXT) {
+			message.outMessage("I03", "TSVãƒ•ã‚¡ã‚¤ãƒ«");
+			return W01CommonConst.ERROR;
+		} else if (inFile == W01CommonConst.FCHECK_ERROR_EXS) {
+			message.outMessage("I03", "æ­£ã—ã„æ ¼ç´å…ˆï¼ˆçµ¶å¯¾ãƒ‘ã‚¹ï¼‰");
+			return W01CommonConst.ERROR;
+		} else if (inFile == W01CommonConst.FCHECK_ERROR_EMP) {
+			message.outMessage("E03", "ãƒ•ã‚¡ã‚¤ãƒ«å†…ã«ãƒ‡ãƒ¼ã‚¿");
+			return W01CommonConst.ERROR;
+		}
 
-        if (checkInputPath(readFile) == false) {
-            // ˆÙíI—¹
-            return W01CommonConst.ERROR;
-        }
-        String createFile = readFile.replace(W01CommonConst.CONST_EXTENSION_TSV, W01CommonConst.CONST_EXTENSION_CSV);
-        // tsvƒtƒ@ƒCƒ‹“Ç‚İ‚İƒƒ\ƒbƒh‚ğŒÄ‚Ño‚µ
-        List<String> list = ReadFile(readFile);
-        if (list == null) {
-            message.outMessage("I03", "ƒ^ƒu‹æØ‚è‚Æ‚È‚Á‚Ä‚¢‚éTSVƒtƒ@ƒCƒ‹");
-            // ˆÙíI—¹
-            return W01CommonConst.ERROR;
-        }
+		String createFile = readFile.replace(
+				W01CommonConst.CONST_EXTENSION_TSV,
+				W01CommonConst.CONST_EXTENSION_CSV);
+		// tsvãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼ã³å‡ºã—
+		List<String> list = ReadFile(readFile);
+		if (list == null) {
+			message.outMessage("I03", "ã‚¿ãƒ–åŒºåˆ‡ã‚Šã¨ãªã£ã¦ã„ã‚‹TSVãƒ•ã‚¡ã‚¤ãƒ«");
+			// ç•°å¸¸çµ‚äº†
+			return W01CommonConst.ERROR;
+		}
 
-        // Csvƒtƒ@ƒCƒ‹o—Íƒƒ\ƒbƒh‚ğŒÄ‚Ño‚µ
-        int result = CreateCsv(createFile, list);
-        if (result == 0) {
-            // ³íI—¹
-            return W01CommonConst.SUCCESS;
-        } else {
-            // ˆÙíI—¹
-            return W01CommonConst.ERROR;
-        }
+		// Csvãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼ã³å‡ºã—
+		int result = CreateCsv(createFile, list);
+		if (result == 0) {
+			// æ­£å¸¸çµ‚äº†
+			message.outMessage("I01", "TSVãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰CSVãƒ•ã‚¡ã‚¤ãƒ«ã¸ã®å¤‰æ›");
+			return W01CommonConst.SUCCESS;
+		} else {
+			// ç•°å¸¸çµ‚äº†
+			message.outMessage("E02", "TSVãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰CSVãƒ•ã‚¡ã‚¤ãƒ«ã¸ã®å¤‰æ›");
+			return W01CommonConst.ERROR;
+		}
+	}
 
-    }
+	/**
+	 * tsvãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ãƒ¡ã‚½ãƒƒãƒ‰
+	 *
+	 * @param readFileName
+	 *            èª­ã¿è¾¼ã¿å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«å
+	 * @return List<String[]> èª­ã¿è¾¼ã¿å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«ã®å†…å®¹
+	 */
+	@SuppressWarnings("resource")
+	public static List<String> ReadFile(String readFileName) {
+		List<String> list = new ArrayList<String>(0);
+		try {
+			File file = new File(readFileName);
+			String str = null;
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					new FileInputStream(file),
+					W01CommonConst.CONST_CHAR_CODE_UTF8));
 
-    /**
-     * ReadFile
-     *
-     * tsvƒtƒ@ƒCƒ‹“Ç‚İ‚İƒƒ\ƒbƒh
-     *
-     * @param readFileName “Ç‚İ‚İ‘ÎÛƒtƒ@ƒCƒ‹–¼
-     * @return List<String[]> “Ç‚İ‚İ‘ÎÛƒtƒ@ƒCƒ‹‚Ì“à—e
-     */
-    @SuppressWarnings("resource")
-    public static List<String> ReadFile(String readFileName) {
-        List<String> list = new ArrayList<String>(0);
-        try {
-            File file = new File(readFileName);
-            String str = null;
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), W01CommonConst.CONST_CHAR_CODE_UTF8));
+			// èª­ã¿è¾¼ã¿å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«ã®å†…å®¹ã‚’ãƒªã‚¹ãƒˆã«è¿½åŠ 
+			while ((str = br.readLine()) != null) {
+				String data = str;
+				if (data.contains(W01CommonConst.CONST_ST_COMMA)) {
+					return null;
+				}
+				String tmpArray = data.replace(W01CommonConst.CONST_ST_TAB,
+						W01CommonConst.CONST_ST_COMMA);
+				list.add(tmpArray);
+			}
+			br.close();
+		} catch (Exception e) {
+			// èª­ã¿è¾¼ã¿ã«ã¦ç•°å¸¸çµ‚äº†
+			return null;
+		}
+		// èª­ã¿è¾¼ã¿æ­£å¸¸çµ‚äº†
+		return list;
+	}
 
-            // “Ç‚İ‚İ‘ÎÛƒtƒ@ƒCƒ‹‚Ì“à—e‚ğƒŠƒXƒg‚É’Ç‰Á
-            while ((str = br.readLine()) != null) {
-                String data = str;
-                if (data.contains(W01CommonConst.CONST_ST_COMMA)) {
-                    return null;
-                }
-                String tmpArray = data.replace(W01CommonConst.CONST_ST_TAB, W01CommonConst.CONST_ST_COMMA);
-                list.add(tmpArray);
-            }
-            br.close();
-        } catch (Exception e) {
-            // “Ç‚İ‚İ‚É‚ÄˆÙíI—¹
-            return null;
-        }
-        // “Ç‚İ‚İ³íI—¹
-        return list;
-    }
+	/**
+	 * Csvãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›ãƒ¡ã‚½ãƒƒãƒ‰
+	 *
+	 * @param createFileName
+	 * @param list
+	 * @return 0:æ­£å¸¸çµ‚äº† 1:ç•°å¸¸çµ‚äº†
+	 */
+	public static int CreateCsv(String createFileName, List<String> list) {
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(createFileName),
+					W01CommonConst.CONST_CHAR_CODE_UTF8)));
 
-    /**
-     * CreateCsv
-     *
-     * Csvƒtƒ@ƒCƒ‹o—Íƒƒ\ƒbƒh
-     *
-     * @param createFileName
-     * @param list
-     * @return
-     */
-    public static int CreateCsv(String createFileName, List<String> list) {
-        PrintWriter pw = null;
-        try {
-            pw = new PrintWriter(
-                    new BufferedWriter(new OutputStreamWriter(new FileOutputStream(createFileName), W01CommonConst.CONST_CHAR_CODE_UTF8)));
-
-            // ,‚ğ’Ç‰Á‚µAƒtƒ@ƒCƒ‹o—Í
-            for (String tmpStringArray : list) {
-                pw.println(String.join(W01CommonConst.CONST_ST_COMMA, tmpStringArray));
-            }
-            // ƒtƒ@ƒCƒ‹‚ğ•Â‚¶‚é
-            pw.close();
-            return 0;
-        } catch (Exception e) {
-            // ƒtƒ@ƒCƒ‹o—Í‚ÅˆÙíI—¹
-            return 1;
-        }
-
-    }
-
-    public static boolean checkInputPath(String readFile) {
-
-        // Šg’£qƒ`ƒFƒbƒN
-        if (!readFile.endsWith(W01CommonConst.CONST_EXTENSION_TSV)) {
-            message.outMessage("I03", "TSVƒtƒ@ƒCƒ‹");
-            return false;
-        }
-        // ƒtƒ@ƒCƒ‹‚Ì‘¶İŠm”F
-        File file = new File(readFile);
-        if (!file.exists()) {
-            message.outMessage("I03", "³‚µ‚¢Ši”[æiâ‘ÎƒpƒXj");
-            return false;
-        }
-        // ƒtƒ@ƒCƒ‹ƒTƒCƒY‚ÌŠm”F
-        if (file.length() == 0) {
-            message.outMessage("E03", "ƒtƒ@ƒCƒ‹“à‚Éƒf[ƒ^");
-            return false;
-        }
-        return true;
-    }
+			// ,ã‚’è¿½åŠ ã—ã€ãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›
+			for (String tmpStringArray : list) {
+				pw.println(String.join(W01CommonConst.CONST_ST_COMMA,
+						tmpStringArray));
+			}
+			// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‰ã˜ã‚‹
+			pw.close();
+			return 0;
+		} catch (Exception e) {
+			// ãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›ã§ç•°å¸¸çµ‚äº†
+			return 1;
+		}
+	}
 }

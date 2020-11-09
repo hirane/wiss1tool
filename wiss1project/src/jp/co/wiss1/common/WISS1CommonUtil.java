@@ -4,7 +4,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Properties;
+
+import jp.co.wiss1.w01.common.W01CommonConst;
 
 public class WISS1CommonUtil {
 
@@ -46,4 +51,27 @@ public class WISS1CommonUtil {
 	    public static String getProperty(final String key, final String defaultValue) {
 	        return properties.getProperty(key, defaultValue);
 	    }
+
+	    /**
+	     * DB接続する
+	     *
+	     * @return connection
+	     */
+	     public static Connection getConnection() {
+	         // DB接続
+	         Connection connection = null;
+	         // DB接続情報を設定する
+	         String url = WISS1CommonUtil.getProperty(W01CommonConst.PRO_DB_URL); // 接続パス
+	         String id = WISS1CommonUtil.getProperty(W01CommonConst.PRO_DB_USER); // ログインID
+	         String pw = WISS1CommonUtil.getProperty(W01CommonConst.PRO_DB_PASS); // ログインパスワード
+
+	         try {
+	             return connection = DriverManager.getConnection(url, id, pw);
+	         } catch (SQLException e) {
+	             // TODO 自動生成された catch ブロック
+	             e.printStackTrace();
+	         }
+	         return connection;
+
+	     }
 }
