@@ -44,7 +44,6 @@ public class W01CommonConst {
      */
     public static final String CONST_ST_PERIOD = ".";
 
-
     /**
      * タブ
      */
@@ -179,5 +178,25 @@ public class W01CommonConst {
      * 数値1
      */
     public static final int NUM_ONE = 1;
+
+    /**
+     * 戻り値（ファイルチェック正常）
+     */
+    public static final int FCHECK_SUCCESS = 0;
+
+    /**
+     * 戻り値（ファイルチェック異常（拡張子エラー））
+     */
+    public static final int FCHECK_ERROR_EXT = 1;
+
+    /**
+     * 戻り値（ファイルチェック異常（ファイルなしエラー））
+     */
+    public static final int FCHECK_ERROR_EXS = 2;
+
+    /**
+     * 戻り値（ファイルチェック異常（ファイル0バイトエラー））
+     */
+    public static final int FCHECK_ERROR_EMP = 3;
 
 }

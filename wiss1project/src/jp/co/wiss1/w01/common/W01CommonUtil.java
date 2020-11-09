@@ -1,5 +1,7 @@
 package jp.co.wiss1.w01.common;
 
+import java.io.File;
+
 /**
  * WISS1ツール共通クラス
  *
@@ -12,7 +14,10 @@ public class W01CommonUtil {
     static final String BF_STR = "%1";
     static final String DLMTR = ":";
 
+    static W01CommonUtil message = new W01CommonUtil();
+
     protected enum MsgStr {
+        I00("I00", "%1"),
         I01("I01", "%1は正常終了しました。"),
         I02("I02", "%1が完了しました。"),
         I03("I03", "%1を入力ください："),
@@ -68,4 +73,32 @@ public class W01CommonUtil {
         System.out.println(message);
         return true;
     }
+
+    /**
+     * 指定したファイルのチェックメソッド
+     * 　１．拡張子チェック
+     * 　２．ファイルの存在チェック
+     * 　３．ファイルサイズチェック
+     * @param inputPath 入力ファイルパス（絶対パス）
+     * @param extension 拡張子
+     * @return int（0：正常、1：拡張子エラー、2:ファイルなしエラー、3:ファイル0バイトエラー）
+     */
+    public static int checkInputPath(String inputPath, String extension) {
+
+        // 拡張子チェック
+        if (!inputPath.endsWith(extension)) {
+            return W01CommonConst.FCHECK_ERROR_EXT;
+        }
+        // ファイルの存在確認
+        File file = new File(inputPath);
+        if (!file.exists()) {
+            return W01CommonConst.FCHECK_ERROR_EXS;
+        }
+        // ファイルサイズの確認
+        if (file.length() == 0) {
+            return W01CommonConst.FCHECK_ERROR_EMP;
+        }
+        return W01CommonConst.FCHECK_SUCCESS;
+    }
+
 }
