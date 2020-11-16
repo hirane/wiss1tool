@@ -1,8 +1,10 @@
 package jp.co.wiss1.w01.business;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -234,16 +236,15 @@ public class W01SelectTableData {
 
             String fileNow = sdf.format(now);
 
-            // テーブル名と現在時刻を合わせる
+            // ファイル名を作成
             String fileName = tablebName + W01CommonConst.FILE_NM_DATA + fileNow;
 
             String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH); // ログインパスワード
 
-            FileWriter fileWriter =
-                    new FileWriter(path + fileName + W01CommonConst.CONST_ST_PERIOD
-                            + W01CommonConst.CONST_EXTENSION_CSV);
+            File fileWriter =
+                    new File(path + fileName + W01CommonConst.CONST_EXTENSION_CSV);
 
-            PrintWriter printWriter = new PrintWriter(new BufferedWriter(fileWriter));
+            PrintWriter printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileWriter),W01CommonConst.CONST_CHAR_CODE_UTF8)));
 
             // 項目名を格納する配列
             ArrayList<String> clmnAry = null;

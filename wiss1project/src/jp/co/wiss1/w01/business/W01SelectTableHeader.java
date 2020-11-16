@@ -189,9 +189,9 @@ public class W01SelectTableHeader {
                                 + W01CommonConst.CONST_EXTENSION_CSV);
 
                 //指定された名前のファイルに書き込むためのファイル出力ストリームを作成します。
-                FileOutputStream FileOutput = new FileOutputStream(fInputCsv);
+
                 PrintWriter pWriter =
-                        new PrintWriter(new BufferedWriter(new OutputStreamWriter(FileOutput)));
+                        new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fInputCsv),W01CommonConst.CONST_CHAR_CODE_UTF8)));
 
                 //tableのヘッダ内容を取得
                 ResultSet rsColumns =
