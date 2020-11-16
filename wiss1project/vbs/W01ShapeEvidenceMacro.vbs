@@ -93,7 +93,7 @@ Do Until objReadStream.EOS
         ' セルを格子で囲む
         objSheet.Cells(iRow, iCol).Borders.LineStyle = 1
         ' カラムの背景色を変える
-        If iRow < 3 then
+        If iRow < 2 then
             objSheet.Cells(iRow, iCol).Interior.ColorIndex = 20
         End If
 
