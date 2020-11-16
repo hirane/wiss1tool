@@ -81,7 +81,7 @@ public class W01SelectTableData {
             String sql1 = W01CommonConst.TBL_SELECT_ALL + W01CommonConst.TBL_NM_EMPLOYEE;
 
             ResultSet resultSet = resultSetData(sql1);
-            if (resultSet.equals(null)) {
+            if (resultSet == null) {
                 return W01CommonConst.ERROR;
             }
 
@@ -104,7 +104,7 @@ public class W01SelectTableData {
             String sql2 = W01CommonConst.TBL_SELECT_ALL + W01CommonConst.TBL_NM_DIVISION;
 
             ResultSet resultSet2 = resultSetData(sql2);
-            if (resultSet2.equals(null)) {
+            if (resultSet2 == null) {
                 return W01CommonConst.ERROR;
             }
 
@@ -127,7 +127,7 @@ public class W01SelectTableData {
             String sql3 = W01CommonConst.TBL_SELECT_ALL + W01CommonConst.TBL_NM_POST;
 
             ResultSet resultSet3 = resultSetData(sql3);
-            if (resultSet3.equals(null)) {
+            if (resultSet3 == null) {
                 return W01CommonConst.ERROR;
             }
 
