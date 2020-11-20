@@ -180,6 +180,16 @@ public class W01CommonConst {
     public static final int NUM_ONE = 1;
 
     /**
+     * 数値2
+     */
+    public static final int NUM_TWO = 2;
+
+    /**
+     * 数値3
+     */
+    public static final int NUM_THREE = 3;
+
+    /**
      * 戻り値（ファイルチェック正常）
      */
     public static final int FCHECK_SUCCESS = 0;
