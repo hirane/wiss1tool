@@ -209,4 +209,24 @@ public class W01CommonConst {
      */
     public static final int FCHECK_ERROR_EMP = 3;
 
+    /**
+     * 選択肢_はい
+     */
+    public static final String ONE_YES = "1：はい";
+
+    /**
+     * 選択肢_いいえ
+     */
+    public static final String TWO_NO = "2：いいえ";
+
+    /**
+     * 選択肢_tsv
+     */
+    public static final String ONE_TSV = "1：tsv";
+
+    /**
+     * 選択肢_csv
+     */
+    public static final String TWO_CSV = "2：csv";
+
 }
