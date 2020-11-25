@@ -100,26 +100,6 @@ public class W01CommonConst {
     public static final String TBL_SELECT_ALL = "SELECT * FROM ";
 
     /**
-     * INSERT文
-     */
-    public static final String TBL_INSERT_ONE = "INSERT INTO ";
-
-    /**
-     * INSERT文
-     */
-    public static final String TBL_INSERT_TWO = " VALUES (";
-
-    /**
-     * INSERT文
-     */
-    public static final String TBL_INSERT_THREE = ");";
-
-    /**
-     * DELETE文
-     */
-    public static final String TBL_DELETE_ALL = "DELETE FROM ";
-
-    /**
      * コマンド
      */
     public static final String COMMAND = "cmd /c cscript vbs\\W01ShapeEvidenceMacro.vbs";
@@ -250,33 +230,7 @@ public class W01CommonConst {
     public static final String TWO_CSV = "2：csv";
 
     /**
-     * 操作内容選択肢_1
+     * 連動機能_9
      */
-    public static final String OPE_CON_ONE = "1：データ取得";
-
-    /**
-     * 操作内容選択肢_2
-     */
-    public static final String OPE_CON_TWO = "2：データ追加";
-
-    /**
-     * 操作内容選択肢_3
-     */
-    public static final String OPE_CON_THREE = "3：データ削除";
-
-    /**
-     * 操作内容選択肢_1（ユーザが指定した選択肢）
-     */
-    public static final String OPE_CH_ONE = "1";
-
-    /**
-     * 操作内容選択肢_2（ユーザが指定した選択肢）
-     */
-    public static final String OPE_CH_TWO = "2";
-
-    /**
-     * 操作内容選択肢_3（ユーザが指定した選択肢）
-     */
-    public static final String OPE_CH_THREE = "3";
-
+    public static final int SELECT_NINE = 9;
 }
