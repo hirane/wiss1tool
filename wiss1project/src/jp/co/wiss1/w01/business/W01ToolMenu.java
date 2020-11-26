@@ -73,7 +73,7 @@ public class W01ToolMenu {
                     } else if ("2".equals(str)) {
                         // テーブルデータ取得
                         W01SelectTableData w01SelectTableData = new W01SelectTableData();
-                        result = w01SelectTableData.main();
+                        result = w01SelectTableData.SelectTableData("");
                         break;
                     } else if ("3".equals(str)) {
                         System.out.println("メニュー画面に戻ります");
@@ -98,7 +98,7 @@ public class W01ToolMenu {
             } else if ("9".equals(str)) {
                 // テーブルデータ取得
                 W01SelectTableData w01SelectTableData = new W01SelectTableData();
-                result = w01SelectTableData.main(str);
+                result = w01SelectTableData.SelectTableData(str);
             } else {
                 // 入力値不正
                 System.out.println("ERROE:1～3を入力してください");
