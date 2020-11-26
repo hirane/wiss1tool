@@ -59,7 +59,7 @@ public class W01SelectTableData {
 
         }
 
-        String numData = null;
+        String numData = "1";
         if (!W01CommonConst.SELECT_NINE.equals(num)) {
             // 1：データ取得
             message.outMessage("I00", W01CommonConst.OPE_CON_ONE);
@@ -69,7 +69,7 @@ public class W01SelectTableData {
             message.outMessage("I00", W01CommonConst.OPE_CON_THREE);
 
             //実行したい操作の番号を入力
-            message.outMessage("I04", "実行したい操作");
+            message.outMessage("I04", "対象にしたい処理");
             numData = scan.next();
         }
 
@@ -253,6 +253,7 @@ public class W01SelectTableData {
      * @return String（SUCCESS:正常終了 ERROR:異常終了）
      * @throws SQLException
      */
+    @SuppressWarnings("resource")
     private static String outputFile(ResultSet resultSet, String tablebName, String num)
             throws SQLException {
 
@@ -328,10 +329,38 @@ public class W01SelectTableData {
                     }
                 }
 
+                W01CommonUtil message = new W01CommonUtil();
                 if (W01CommonConst.SELECT_NINE.equals(num)) {
+                    message.outMessage("I00", "1：TSVファイル");
+                    message.outMessage("I00", "2：EXCELファイル");
+                    message.outMessage("I04", "出力先にしたいファイルの形");
+                    Scanner scan = new Scanner(System.in);
+                    int numSelect = scan.nextInt();
+
+                    // ファイルパスをファイル型から文字列型へ変更
                     String filePath = fileWriter.toString();
-                    W01ConvertFileCsvToTsv W01ConvertFileCsvToTsv = new W01ConvertFileCsvToTsv();
-                    W01ConvertFileCsvToTsv.FileCheck(filePath, num);
+
+                    switch (numSelect) {
+
+                    // TSVファイル変換を行う
+                    case W01CommonConst.NUM_ONE:
+
+                        W01ConvertFileCsvToTsv W01ConvertFileCsvToTsv =
+                                new W01ConvertFileCsvToTsv();
+                        jp.co.wiss1.w01.business.W01ConvertFileCsvToTsv.FileCheck(filePath, num);
+
+                        // エビデンス成型を行う
+                    case W01CommonConst.NUM_TWO:
+                        W01ShapeEvidence W01ShapeEvidence = new W01ShapeEvidence();
+                        W01ShapeEvidence.EvidenceOutput(filePath);
+
+                        // それ以外
+                    default:
+                        message.outMessage("E04", "1～2で");
+                        // 異常終了の場合は1を返す
+                        return W01CommonConst.ERROR;
+                    }
+
                 }
 
             } catch (SQLException e) {
