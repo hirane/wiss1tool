@@ -40,7 +40,7 @@ public class W01ConvertFileCsvToTsv {
         // ファイルパスとファイル名の結合
         String inputFile = (path + fileName);
         // selectNumは連動機能と判別させる数値
-        int selectNum = 0;
+        String selectNum = null;
         String returnValue = FileCheck(inputFile, selectNum);
         if (W01CommonConst.ERROR.equals(returnValue)) {
             message.outMessage("E02", "CSVからTSVへのファイル変換");
@@ -51,7 +51,7 @@ public class W01ConvertFileCsvToTsv {
     }
 
     @SuppressWarnings("resource")
-    public static String FileCheck(String csvFile, int selectNum) {
+    public static String FileCheck(String csvFile, String selectNum) {
         W01CommonUtil message = new W01CommonUtil();
         // 新ファイルの拡張子書き換え
         String createFile =
@@ -113,7 +113,7 @@ public class W01ConvertFileCsvToTsv {
 
                 // エビデンス成型処理を行う
                 case W01CommonConst.NUM_ONE:
-                    W01ShapeEvidence.EvidenceOutput(createFile,W01CommonConst.SELECT_NINE);
+                    W01ShapeEvidence.EvidenceOutput(createFile);
 
                 case W01CommonConst.NUM_TWO:
                     return W01CommonConst.SUCCESS;
@@ -145,7 +145,7 @@ public class W01ConvertFileCsvToTsv {
     public static String AllFileCsvToTsv(List<String> csvList) {
         W01CommonUtil message = new W01CommonUtil();
         // selectNumは連動機能と判別させる数値
-        int selectNum = 0;
+        String selectNum = null;
         for (String csvFile : csvList) {
             String returnValue = FileCheck(csvFile, selectNum);
             if (W01CommonConst.ERROR.equals(returnValue)) {
