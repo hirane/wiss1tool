@@ -91,6 +91,7 @@ public class W01ConvertFileSelect {
      * @param なし
      * @return 処理結果を返却する
      */
+    @SuppressWarnings("resource")
     public String FileSelect() {
 
         W01CommonUtil message = new W01CommonUtil();

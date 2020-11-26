@@ -23,14 +23,12 @@ import jp.co.wiss1.w01.common.W01CommonUtil;
  * @version 1.0
  */
 public class W01ConvertFileCsvToTsv {
-    public static WISS1CommonUtil commUtil = new WISS1CommonUtil();
 
     /**
      * CSVファイルからTSVファイルへの書き換え
      * @param なし
      * @return 処理結果を返却する
      */
-    @SuppressWarnings("resource")
     public static String ConvertFileCsvToTsv(String fileName) {
         //StringBuffer inputFile = new StringBuffer();
         W01CommonUtil message = new W01CommonUtil();
