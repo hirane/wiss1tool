@@ -26,7 +26,7 @@ public class W01ShapeEvidence {
 	 * @return String（0:正常終了 1:異常終了）
 	 */
 	@SuppressWarnings("resource")
-	public String main(String str) {
+	public String main() {
 		W01CommonUtil message = new W01CommonUtil();
 
 		// 全件を対象にするか選択
@@ -92,7 +92,7 @@ public class W01ShapeEvidence {
 	 * @return 処理結果を返却する
 	 */
 	@SuppressWarnings("unused")
-	private String EvidenceOutput(String str) {
+	public static String EvidenceOutput(String str) {
 		// TODO 自動生成されたメソッド・スタブ
 
 		W01CommonUtil message = new W01CommonUtil();
