@@ -42,7 +42,7 @@ public class W01ShapeEvidence {
         // フォルダ内のすべてを対象にする
         case W01CommonConst.NUM_ONE:
             // 対象にするファイルを選択させる
-            message.outMessage("I04", "対象にするファイルを");
+            message.outMessage("I04", "対象にするファイル");
             message.outMessage("I00", W01CommonConst.ONE_TSV);
             message.outMessage("I00", W01CommonConst.TWO_CSV);
             int num2 = scan.nextInt();
@@ -57,7 +57,7 @@ public class W01ShapeEvidence {
                 AllFileSorting(num2);
             default:
                 W01CommonUtil messege = new W01CommonUtil();
-                messege.outMessage("E04", "1~2で");
+                messege.outMessage("E04", "1または2");
                 // 異常終了の場合は1を返す
                 return W01CommonConst.ERROR;
             }
@@ -78,7 +78,7 @@ public class W01ShapeEvidence {
             EvidenceOutput(fileNamePath);
         default:
             W01CommonUtil messege = new W01CommonUtil();
-            messege.outMessage("E04", "1~2で");
+            messege.outMessage("E04", "1または2");
             // 異常終了の場合は1を返す
             return W01CommonConst.ERROR;
 
@@ -93,11 +93,11 @@ public class W01ShapeEvidence {
      */
     @SuppressWarnings("unused")
     public static String EvidenceOutput(String str) {
-        // TODO 自動生成されたメソッド・スタブ
 
         W01CommonUtil message = new W01CommonUtil();
-        //インプットファイルの確認
+        //インプットファイルのチェック
         int result = W01CommonUtil.checkInputPath(str, W01CommonConst.CONST_EXTENSION_CSV);
+        // 異なる拡張子を入力された場合
         if (result == W01CommonConst.FCHECK_ERROR_EXT) {
             result = W01CommonUtil.checkInputPath(str, W01CommonConst.CONST_EXTENSION_TSV);
             if (result == W01CommonConst.FCHECK_ERROR_EXT) {
@@ -105,11 +105,13 @@ public class W01ShapeEvidence {
                 //異常終了
                 return W01CommonConst.ERROR;
             }
+        // ファイルが存在しない場合
         } else if (result == W01CommonConst.FCHECK_ERROR_EXS) {
             message.outMessage("E03", "ファイル");
             //異常終了
             return W01CommonConst.ERROR;
 
+        // ファイルが空の場合
         } else if (result == W01CommonConst.FCHECK_ERROR_EMP) {
             message.outMessage("E03", "ファイル内にデータ");
             //異常終了
@@ -121,7 +123,7 @@ public class W01ShapeEvidence {
         try {
             // 処理を走らせる 実行する為のメソッド
             Runtime rt = Runtime.getRuntime();
-            //
+            // マクロの実行
             Process process = rt.exec(W01CommonConst.COMMAND + " " + str);
             // waitFor 処理が終わったら0を返す 1だったら異常終了
             int ret = process.waitFor();
@@ -154,7 +156,7 @@ public class W01ShapeEvidence {
 
         File file1 = new File(path);
         // ファイルオブジェクトを配列で取得
-        File fileArray1[] = file1.listFiles();
+        File [] fileArray1 = file1.listFiles();
         // 判別した後のtsvファイル名を入れるリスト
         List<String> tsvList = new ArrayList<String>(0);
         // 判別した後のcsvファイル名を入れるリスト
@@ -169,10 +171,10 @@ public class W01ShapeEvidence {
                 //拡張子判断
                 String extension = fileName.substring(fileName.lastIndexOf(W01CommonConst.CONST_ST_PERIOD));
                 //TSVファイルの場合
-                if (extension.equals(W01CommonConst.CONST_EXTENSION_TSV)) {
+                if (W01CommonConst.CONST_EXTENSION_TSV.equals(extension)) {
                     tsvList.add(fileName);
                     //CSVファイルの場合
-                } else if (extension.equals(W01CommonConst.CONST_EXTENSION_CSV)) {
+                } else if (W01CommonConst.CONST_EXTENSION_CSV.equals(extension)) {
                     csvList.add(fileName);
                 }
             }
