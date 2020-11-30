@@ -33,7 +33,7 @@ public class W01SelectTableData {
 
     /**
      * divisionCode、postCode、tEmployeeDatasメソッドを呼び出します
-     * @param なし
+     * @param num（連動機能番号）
      * @return String（SUCCESS:正常終了 ERROR:異常終了）
      */
     @SuppressWarnings("resource")
@@ -99,6 +99,7 @@ public class W01SelectTableData {
     /**
      * テーブルのデータを取得するメソッド
      * @param numTable（入力された数値）
+     * @param num（連動機能番号）
      * @return String（SUCCESS:正常終了 ERROR:異常終了）
      */
     private static String selectData(String numTable, String num) throws SQLException {
@@ -250,6 +251,7 @@ public class W01SelectTableData {
      * 取得したデータをCSVファイルに出力するメソッド
      * @param resultSet (DB接続結果)
      * @param tablebName (テーブル名)
+     * @param num（連動機能番号）
      * @return String（SUCCESS:正常終了 ERROR:異常終了）
      * @throws SQLException
      */
@@ -442,26 +444,37 @@ public class W01SelectTableData {
 
         // 1行ずつCSVファイルを読み込む
         while ((line = br.readLine()) != null) {
-            if (numTable.equals(W01CommonConst.TBL_CH_ONE)) {
-                // 社員情報
-                String sql = W01CommonConst.TBL_INSERT_ONE + W01CommonConst.TBL_NM_EMPLOYEE
+            switch (numTable) {
+            // 社員情報
+            case W01CommonConst.TBL_CH_ONE:
+
+                String sql1 = W01CommonConst.TBL_INSERT_ONE + W01CommonConst.TBL_NM_EMPLOYEE
                         + W01CommonConst.TBL_INSERT_TWO + line + W01CommonConst.TBL_INSERT_THREE;
-                statement.executeUpdate(sql);
-            } else if (numTable.equals(W01CommonConst.TBL_CH_TWO)) {
+                statement.executeUpdate(sql1);
+
                 // 部署コード
-                String sql = W01CommonConst.TBL_INSERT_ONE + W01CommonConst.TBL_NM_DIVISION
+            case W01CommonConst.TBL_CH_TWO:
+
+                String sql2 = W01CommonConst.TBL_INSERT_ONE + W01CommonConst.TBL_NM_DIVISION
                         + W01CommonConst.TBL_INSERT_TWO + line + W01CommonConst.TBL_INSERT_THREE;
-                statement.executeUpdate(sql);
-                System.out.println(sql);
-            } else if (numTable.equals(W01CommonConst.TBL_CH_THREE)) {
+                statement.executeUpdate(sql2);
+
                 // 役職コード
-                String sql = W01CommonConst.TBL_INSERT_ONE + W01CommonConst.TBL_NM_POST
+            case W01CommonConst.TBL_CH_THREE:
+
+                String sql3 = W01CommonConst.TBL_INSERT_ONE + W01CommonConst.TBL_NM_POST
                         + W01CommonConst.TBL_INSERT_TWO + line + W01CommonConst.TBL_INSERT_THREE;
-                statement.executeUpdate(sql);
+                statement.executeUpdate(sql3);
+
+            default:
+                message.outMessage("E02", "TBL呼び出し");
+                // 異常終了の場合は1を返す
+                return W01CommonConst.ERROR;
             }
 
         }
 
+        // 正常終了の場合は0を返す
         return W01CommonConst.SUCCESS;
     }
 
