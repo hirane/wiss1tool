@@ -344,14 +344,10 @@ public class W01SelectTableData {
 
                     // TSVファイル変換を行う
                     case W01CommonConst.NUM_ONE:
-
-                        W01ConvertFileCsvToTsv W01ConvertFileCsvToTsv =
-                                new W01ConvertFileCsvToTsv();
-                        jp.co.wiss1.w01.business.W01ConvertFileCsvToTsv.FileCheck(filePath, num);
+                        W01ConvertFileCsvToTsv.FileCheck(filePath, num);
 
                         // エビデンス成型を行う
                     case W01CommonConst.NUM_TWO:
-                        W01ShapeEvidence W01ShapeEvidence = new W01ShapeEvidence();
                         W01ShapeEvidence.EvidenceOutput(filePath);
 
                         // それ以外
@@ -407,10 +403,10 @@ public class W01SelectTableData {
 
         // CSVファイルの絶対パスを取得
         String filePath = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH) + fileName;
-        System.out.println(filePath);
 
         String extension = W01CommonConst.CONST_EXTENSION_CSV;
 
+        // インプットファイルの確認
         if (W01CommonUtil.checkInputPath(filePath,
                 W01CommonConst.CONST_EXTENSION_CSV) == W01CommonConst.FCHECK_ERROR_EXT) {
             message.outMessage("I03", extension + "ファイル");
