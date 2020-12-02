@@ -74,4 +74,15 @@ public class WISS1CommonUtil {
 	         return connection;
 
 	     }
+
+	      /**
+	         * ファイル名の拡張子判断
+	         *
+	         * @param fileName(ファイル名)
+	         * @return 拡張子
+	         */
+	         public static String judgmentExtension(String fileName) {
+	                 // 拡張子判断
+                    return fileName.substring(fileName.lastIndexOf(W01CommonConst.CONST_ST_PERIOD));
+	         }
 }
