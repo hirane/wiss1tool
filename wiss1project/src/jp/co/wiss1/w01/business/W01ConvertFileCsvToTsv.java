@@ -24,33 +24,32 @@ import jp.co.wiss1.w01.common.W01CommonUtil;
  */
 public class W01ConvertFileCsvToTsv {
 
+    static W01CommonUtil message = new W01CommonUtil();
+
     /**
      * CSVファイルからTSVファイルへの書き換え
      * @param なし
      * @return 処理結果を返却する
      */
-    public static String ConvertFileCsvToTsv(String fileName) {
+    public static String convertFileCsvToTsv(String fileName, boolean interlockingFlg) {
         //StringBuffer inputFile = new StringBuffer();
-        W01CommonUtil message = new W01CommonUtil();
 
         // プロパティからファイルパスを読み込む
         String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH);
         // ファイルパスとファイル名の結合
         String inputFile = (path + fileName);
-        // selectNumは連動機能と判別させる数値
-        String selectNum = null;
-        String returnValue = FileCheck(inputFile, selectNum);
-        if (W01CommonConst.ERROR.equals(returnValue)) {
-            message.outMessage("E02", "CSVからTSVへのファイル変換");
-            return W01CommonConst.ERROR;
-        }
 
-        return W01CommonConst.SUCCESS;
+        return fileCheck(inputFile, interlockingFlg);
+
     }
 
+    /**
+     * ファイルチェックを行い、CSVファイルからTSVファイルへの書き換え出力
+     * @param csvFile(ファイル名(絶対パス)),連動機能と判別させるフラグ
+     * @return 処理結果を返却する
+     */
     @SuppressWarnings("resource")
-    public static String FileCheck(String csvFile, String selectNum) {
-        W01CommonUtil message = new W01CommonUtil();
+    public static String fileCheck(String csvFile, boolean interlockingFlg) {
         // 新ファイルの拡張子書き換え
         String createFile =
                 csvFile.replace(W01CommonConst.CONST_EXTENSION_CSV,
@@ -75,9 +74,9 @@ public class W01ConvertFileCsvToTsv {
                 return W01CommonConst.ERROR;
             }
             // TSVファイルを出力
-            FileOutputStream fos = new FileOutputStream(createFile);
+            FileOutputStream newFile = new FileOutputStream(createFile);
             OutputStreamWriter osw =
-                    new OutputStreamWriter(fos, W01CommonConst.CONST_CHAR_CODE_UTF8);
+                    new OutputStreamWriter(newFile, W01CommonConst.CONST_CHAR_CODE_UTF8);
             PrintWriter pOutputTsv = new PrintWriter(new BufferedWriter(osw));
 
             // ファイル書き換え
@@ -99,29 +98,30 @@ public class W01ConvertFileCsvToTsv {
             br.close();
 
             message.outMessage("I01", "CSVからTSVへのファイル変換");
+            while (true) {
+                if (interlockingFlg) {
+                    message.outMessage("I00", "EXCELファイルに出力しますか：");
+                    message.outMessage("I00", W01CommonConst.ONE_YES);
+                    message.outMessage("I00", W01CommonConst.TWO_NO);
+                    Scanner scan = new Scanner(System.in);
+                    String interlockingnum = scan.next();
 
-            if (W01CommonConst.SELECT_NINE == selectNum) {
-                message.outMessage("I00", "EXCELファイルに出力しますか：");
-                message.outMessage("I00", W01CommonConst.ONE_YES);
-                message.outMessage("I00", W01CommonConst.TWO_NO);
-                Scanner scan = new Scanner(System.in);
-                int num = scan.nextInt();
+                    switch (interlockingnum) {
 
-                switch (num) {
+                    // エビデンス成型処理を行う
+                    case W01CommonConst.OPE_CH_ONE:
+                        W01ShapeEvidence.EvidenceOutput(createFile);
 
-                // エビデンス成型処理を行う
-                case W01CommonConst.NUM_ONE:
-                    W01ShapeEvidence.EvidenceOutput(createFile);
+                    case W01CommonConst.OPE_CH_TWO:
+                        return W01CommonConst.SUCCESS;
 
-                case W01CommonConst.NUM_TWO:
-                    return W01CommonConst.SUCCESS;
-
-                    // それ以外
-                default:
-                    W01CommonUtil messege = new W01CommonUtil();
-                    messege.outMessage("E04", "1~2で");
-                    // 異常終了の場合は1を返す
-                    return W01CommonConst.ERROR;
+                        // それ以外
+                    default:
+                        W01CommonUtil messege = new W01CommonUtil();
+                        messege.outMessage("E04", "1~2で");
+                        // 異常終了の場合は1を返す
+                        return W01CommonConst.ERROR;
+                    }
                 }
             }
 
@@ -131,7 +131,6 @@ public class W01ConvertFileCsvToTsv {
             return W01CommonConst.ERROR;
 
         }
-        return W01CommonConst.SUCCESS;
 
     }
 
@@ -140,15 +139,11 @@ public class W01ConvertFileCsvToTsv {
      * @param csvList（フォルダ内のファイル名(絶対パス)）
      * @return 処理結果を返却する
      */
-    public static String AllFileCsvToTsv(List<String> csvList) {
-        W01CommonUtil message = new W01CommonUtil();
+    public static String allFileCsvToTsv(List<String> csvList) {
         // selectNumは連動機能と判別させる数値
-        String selectNum = null;
+        boolean interlockingFlg = false;
         for (String csvFile : csvList) {
-            String returnValue = FileCheck(csvFile, selectNum);
-            if (W01CommonConst.ERROR.equals(returnValue)) {
-                return W01CommonConst.ERROR;
-            }
+            return fileCheck(csvFile, interlockingFlg);
         }
         message.outMessage("I01", "CSVからTSVへのファイル変換");
         // 正常終了の場合は0を返す

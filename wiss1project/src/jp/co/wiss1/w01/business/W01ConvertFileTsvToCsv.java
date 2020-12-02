@@ -32,17 +32,12 @@ public class W01ConvertFileTsvToCsv {
      *
      * @return 処理結果を返却する 0:正常終了 1:異常終了
      */
-    @SuppressWarnings("resource")
-    public static String ConvertFileTsvToCsv(String fileName) {
+    public static String convertFileTsvToCsv(String fileName) {
         // プロパティからファイルパスを読み込む
         String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH);
         // ファイルパスとファイル名の結合
         String inputFile = (path + fileName);
-        String returnValue = FileCheck(inputFile);
-        if (W01CommonConst.ERROR.equals(returnValue)) {
-            return W01CommonConst.ERROR;
-        }
-        return W01CommonConst.SUCCESS;
+        return fileCheck(inputFile);
     }
 
     /**
@@ -52,8 +47,7 @@ public class W01ConvertFileTsvToCsv {
     *            読み込み対象ファイル名
     * @return List<String[]> 読み込み対象ファイルの内容
     */
-    @SuppressWarnings("resource")
-    public static String FileCheck(String inputFile) {
+    public static String fileCheck(String inputFile) {
         // ファイルのチェック
         int inFile = W01CommonUtil.checkInputPath(inputFile, W01CommonConst.CONST_EXTENSION_TSV);
         // 拡張子チェック
@@ -74,24 +68,15 @@ public class W01ConvertFileTsvToCsv {
                 inputFile.replace(W01CommonConst.CONST_EXTENSION_TSV,
                         W01CommonConst.CONST_EXTENSION_CSV);
         // tsvファイル読み込みメソッドを呼び出し
-        List<String> list = ReadFile(inputFile);
-        if (list == null) {
+        List<String> contentsList = readFile(inputFile);
+        if (contentsList == null) {
             message.outMessage("I03", "タブ区切りとなっているTSVファイル");
             // 異常終了
             return W01CommonConst.ERROR;
         }
 
         // Csvファイル出力メソッドを呼び出し
-        int result = CreateCsv(createFile, list);
-        if (result == 0) {
-            // 正常終了
-            message.outMessage("I01", "TSVファイルからCSVファイルへの変換");
-            return W01CommonConst.SUCCESS;
-        } else {
-            // 異常終了
-            message.outMessage("E02", "TSVファイルからCSVファイルへの変換");
-            return W01CommonConst.ERROR;
-        }
+        return createCsv(createFile, contentsList);
 
     }
 
@@ -103,8 +88,8 @@ public class W01ConvertFileTsvToCsv {
      * @return List<String[]> 読み込み対象ファイルの内容
      */
     @SuppressWarnings("resource")
-    public static List<String> ReadFile(String readFileName) {
-        List<String> list = new ArrayList<String>(0);
+    public static List<String> readFile(String readFileName) {
+        List<String> contentsList = new ArrayList<String>(0);
         try {
             File file = new File(readFileName);
             String str = null;
@@ -121,7 +106,7 @@ public class W01ConvertFileTsvToCsv {
                 // ファイルの中身をTSVをCSVに変換
                 String tmpArray =
                         data.replace(W01CommonConst.CONST_ST_TAB, W01CommonConst.CONST_ST_COMMA);
-                list.add(tmpArray);
+                contentsList.add(tmpArray);
             }
             br.close();
         } catch (Exception e) {
@@ -129,7 +114,7 @@ public class W01ConvertFileTsvToCsv {
             return null;
         }
         // 読み込み正常終了
-        return list;
+        return contentsList;
     }
 
     /**
@@ -139,7 +124,7 @@ public class W01ConvertFileTsvToCsv {
      * @param list
      * @return 0:正常終了 1:異常終了
      */
-    public static int CreateCsv(String createFileName, List<String> list) {
+    public static String createCsv(String createFileName, List<String> contentsList) {
         PrintWriter pw = null;
         try {
             pw =
@@ -147,30 +132,31 @@ public class W01ConvertFileTsvToCsv {
                             createFileName), W01CommonConst.CONST_CHAR_CODE_UTF8)));
 
             // ,を追加し、ファイル出力
-            for (String tmpStringArray : list) {
+            for (String tmpStringArray : contentsList) {
                 pw.println(String.join(W01CommonConst.CONST_ST_COMMA, tmpStringArray));
             }
             // ファイルを閉じる
             pw.close();
-            return 0;
-        } catch (Exception e) {
+            // 正常終了
+            message.outMessage("I01", "TSVファイルからCSVファイルへの変換");
+            // 正常終了の場合は0を返す
+            return W01CommonConst.SUCCESS;
+        } catch (Exception e) {            // 異常終了
+            message.outMessage("E02", "TSVファイルからCSVファイルへの変換");;
             // ファイル出力で異常終了
-            return 1;
+            return W01CommonConst.ERROR;
         }
     }
 
     /**
      * フォルダ内一括処理
-     * @param csvList（フォルダ内のファイル名(絶対パス)）
+     * @param tsvList（フォルダ内のファイル名(絶対パス)）
      * @return 処理結果を返却する
      */
-    public static String AllFileTsvToCsv(List<String> tsvList) {
-        W01CommonUtil message = new W01CommonUtil();
+    public static String allFileTsvToCsv(List<String> tsvList) {
         for (String tsvFile : tsvList) {
-            String returnValue = FileCheck(tsvFile);
-            if (W01CommonConst.ERROR.equals(returnValue)) {
-                return W01CommonConst.ERROR;
-            }
+            return fileCheck(tsvFile);
+
         }
         message.outMessage("I01", "CSVからTSVへのファイル変換");
         // 正常終了の場合は0を返す

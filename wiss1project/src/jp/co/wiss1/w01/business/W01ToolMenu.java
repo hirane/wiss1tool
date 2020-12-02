@@ -53,7 +53,7 @@ public class W01ToolMenu {
 			if ("1".equals(str)) {
 				// テーブルデータ取得
 				W01ConvertFileSelect W01ConvertFileSelect = new W01ConvertFileSelect();
-				result = W01ConvertFileSelect.W01ConvertFileSelect();
+				result = W01ConvertFileSelect.convertFileSelect();
 			} else if ("2".equals(str)) {
 				while (true) {
 
