@@ -31,97 +31,111 @@ import jp.co.wiss1.w01.common.W01CommonUtil;
  */
 public class W01SelectTableData {
 
+    private static W01CommonUtil message = new W01CommonUtil();
+
     /**
      * divisionCode、postCode、tEmployeeDatasメソッドを呼び出します
-     * @param num（連動機能番号）
+     * @param interLockingFlg（連動機能と判別させるフラグ）
      * @return String（SUCCESS:正常終了 ERROR:異常終了）
      */
     @SuppressWarnings("resource")
-    public String SelectTableData(String num) {
-        W01CommonUtil message = new W01CommonUtil();
-        // 1：社員情報
-        message.outMessage("I00", W01CommonConst.TBL_NM_ONE);
-        // 2：部署コード
-        message.outMessage("I00", W01CommonConst.TBL_NM_TWO);
-        // 3：役職コード
-        message.outMessage("I00", W01CommonConst.TBL_NM_THREE);
+    public String selectTableData(boolean interLockingFlg) {
 
-        message.outMessage("I04", "取得したいテーブル");
         Scanner scan = new Scanner(System.in);
-        String numTable = scan.next();
+        while (true) {
+            // 1：社員情報
+            message.outMessage("I00", W01CommonConst.TBL_NM_ONE);
+            // 2：部署コード
+            message.outMessage("I00", W01CommonConst.TBL_NM_TWO);
+            // 3：役職コード
+            message.outMessage("I00", W01CommonConst.TBL_NM_THREE);
 
-        //1～3以外を入力したら異常終了で1を返す
-        if (!(numTable.equals(W01CommonConst.TBL_CH_ONE))
-                && !(numTable.equals(W01CommonConst.TBL_CH_TWO))
-                && !(numTable.equals(W01CommonConst.TBL_CH_THREE))) {
-            message.outMessage("E04", "1～3");
-            return W01CommonConst.ERROR;
+            message.outMessage("I04", "取得したいテーブル");
 
-        }
+            String numTable = scan.next();
+            //1～3以外を入力したら異常終了で1を返す
+            if (!(numTable.equals(W01CommonConst.TBL_CH_ONE))
+                    && !(numTable.equals(W01CommonConst.TBL_CH_TWO))
+                    && !(numTable.equals(W01CommonConst.TBL_CH_THREE))) {
+                message.outMessage("E04", "1～3");
+                continue;
 
-        String numData = "1";
-        if (!W01CommonConst.SELECT_NINE.equals(num)) {
-            // 1：データ取得
-            message.outMessage("I00", W01CommonConst.OPE_CON_ONE);
-            // 2：データ追加
-            message.outMessage("I00", W01CommonConst.OPE_CON_TWO);
-            // 3：データ削除
-            message.outMessage("I00", W01CommonConst.OPE_CON_THREE);
-
-            //実行したい操作の番号を入力
-            message.outMessage("I04", "対象にしたい処理");
-            numData = scan.next();
-        }
-
-        String returnValue = null;
-        try {
-            if (numData.equals(W01CommonConst.OPE_CH_ONE)) {
-                returnValue = selectData(numTable, num);
-            } else if (numData.equals(W01CommonConst.OPE_CH_TWO)) {
-                returnValue = addData(numTable);
-            } else if (numData.equals(W01CommonConst.OPE_CH_THREE)) {
-                returnValue = deleteData(numTable);
             }
-            if (W01CommonConst.ERROR.equals(returnValue)) {
-                return W01CommonConst.ERROR;
+
+            System.out.println(interLockingFlg);
+            while (true) {
+                String numData = "1";
+
+                if (!interLockingFlg) {
+                    // 1：データ取得
+                    message.outMessage("I00", W01CommonConst.OPE_CON_ONE);
+                    // 2：データ追加
+                    message.outMessage("I00", W01CommonConst.OPE_CON_TWO);
+                    // 3：データ削除
+                    message.outMessage("I00", W01CommonConst.OPE_CON_THREE);
+
+                    //実行したい操作の番号を入力
+                    message.outMessage("I04", "対象にしたい処理");
+                    numData = scan.next();
+                }
+
+                String returnValue = null;
+                try {
+                    if (W01CommonConst.OPE_CH_ONE.equals(numData)) {
+                        returnValue = selectData(numTable, interLockingFlg);
+                    } else if (W01CommonConst.OPE_CH_TWO.equals(numData)) {
+                        returnValue = addData(numTable);
+                    } else if (W01CommonConst.OPE_CH_THREE.equals(numData)) {
+                        returnValue = deleteData(numTable);
+                    } else {
+                        message.outMessage("E04", "1～3");
+                        continue;
+                    }
+                    if (W01CommonConst.ERROR.equals(returnValue)) {
+                        return W01CommonConst.ERROR;
+                    }
+                } catch (SQLException | IOException e) {
+                    e.printStackTrace();
+                    message.outMessage("E04", "1～3");
+                    // 異常終了の場合は1を返す
+                    return W01CommonConst.ERROR;
+
+                }
+
+                // 正常終了の場合は0を返す
+                return W01CommonConst.SUCCESS;
             }
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-            message.outMessage("E04", "1～3");
-            return W01CommonConst.ERROR;
+
         }
-
-        // 正常終了の場合は0を返す
-        return W01CommonConst.SUCCESS;
-
     }
 
     /**
      * テーブルのデータを取得するメソッド
      * @param numTable（入力された数値）
-     * @param num（連動機能番号）
+     * @param interLockingFlg（連動機能と判別させるフラグ）
      * @return String（SUCCESS:正常終了 ERROR:異常終了）
      */
-    private static String selectData(String numTable, String num) throws SQLException {
+    private static String selectData(String numTable, boolean interLockingFlg) throws SQLException {
 
         switch (numTable) {
         // 社員情報
         case W01CommonConst.TBL_CH_ONE:
 
             // SQL文を定義する
-            String sql1 = W01CommonConst.TBL_SELECT_ALL + W01CommonConst.TBL_NM_EMPLOYEE;
+            String employeeSql = W01CommonConst.TBL_SELECT_ALL + W01CommonConst.TBL_NM_EMPLOYEE;
 
-            ResultSet resultSet = resultSetData(sql1);
-            if (resultSet == null) {
+            ResultSet resultEmployeeSet = resultSetData(employeeSql);
+            if (resultEmployeeSet == null) {
                 return W01CommonConst.ERROR;
             }
 
             // CSVファイルにネームするテーブル名を取得
-            String tablebName = W01CommonConst.TBL_NM_EMPLOYEE;
+            String tablebEmployee = W01CommonConst.TBL_NM_EMPLOYEE;
 
             // 取得したいデータをファイル出力メソッドに渡す
-            String returnValue = outputFile(resultSet, tablebName, num);
-            if (W01CommonConst.ERROR.equals(returnValue)) {
+            String returnEmployeeValue =
+                    outputFile(resultEmployeeSet, tablebEmployee, interLockingFlg);
+            if (W01CommonConst.ERROR.equals(returnEmployeeValue)) {
                 // 異常終了の場合は1を返す
                 return W01CommonConst.ERROR;
             }
@@ -132,20 +146,21 @@ public class W01SelectTableData {
         case W01CommonConst.TBL_CH_TWO:
 
             // SQL文を定義する
-            String sql2 = W01CommonConst.TBL_SELECT_ALL + W01CommonConst.TBL_NM_DIVISION;
+            String divisionSql = W01CommonConst.TBL_SELECT_ALL + W01CommonConst.TBL_NM_DIVISION;
 
-            ResultSet resultSet2 = resultSetData(sql2);
-            if (resultSet2 == null) {
+            ResultSet resultDivisionSet = resultSetData(divisionSql);
+            if (resultDivisionSet == null) {
                 return W01CommonConst.ERROR;
             }
 
             // CSVファイルにネームするテーブル名を取得
-            String tablebName2 = W01CommonConst.TBL_NM_DIVISION;
+            String tablebDivision = W01CommonConst.TBL_NM_DIVISION;
 
             // 取得したいデータをファイル出力メソッドに渡す
-            String returnValue2 = outputFile(resultSet2, tablebName2, num);
+            String returnDivisionValue =
+                    outputFile(resultDivisionSet, tablebDivision, interLockingFlg);
             // 異常終了の場合は1を返す
-            if (W01CommonConst.ERROR.equals(returnValue2)) {
+            if (W01CommonConst.ERROR.equals(returnDivisionValue)) {
                 return W01CommonConst.ERROR;
             }
 
@@ -155,20 +170,20 @@ public class W01SelectTableData {
         // 役職コード
         case W01CommonConst.TBL_CH_THREE:
             // SQL文を定義する
-            String sql3 = W01CommonConst.TBL_SELECT_ALL + W01CommonConst.TBL_NM_POST;
+            String postSql = W01CommonConst.TBL_SELECT_ALL + W01CommonConst.TBL_NM_POST;
 
-            ResultSet resultSet3 = resultSetData(sql3);
-            if (resultSet3 == null) {
+            ResultSet resultPostSet = resultSetData(postSql);
+            if (resultPostSet == null) {
                 return W01CommonConst.ERROR;
             }
 
             // CSVファイルにネームするテーブル名を取得
-            String tablebName3 = W01CommonConst.TBL_NM_POST;
+            String tablebPost = W01CommonConst.TBL_NM_POST;
 
             // 取得したいデータをファイル出力メソッドに渡す
-            String returnValue3 = outputFile(resultSet3, tablebName3, num);
+            String returnPostValue = outputFile(resultPostSet, tablebPost, interLockingFlg);
             // 異常終了の場合は1を返す
-            if (W01CommonConst.ERROR.equals(returnValue3)) {
+            if (W01CommonConst.ERROR.equals(returnPostValue)) {
                 return W01CommonConst.ERROR;
             }
             // 正常終了の場合は0を返す
@@ -251,13 +266,12 @@ public class W01SelectTableData {
      * 取得したデータをCSVファイルに出力するメソッド
      * @param resultSet (DB接続結果)
      * @param tablebName (テーブル名)
-     * @param num（連動機能番号）
+     * @param interLockingFlg（連動機能と判別させるフラグ）
      * @return String（SUCCESS:正常終了 ERROR:異常終了）
      * @throws SQLException
      */
-    @SuppressWarnings("resource")
-    private static String outputFile(ResultSet resultSet, String tablebName, String num)
-            throws SQLException {
+    private static String outputFile(ResultSet resultSet, String tablebName,
+            boolean interLockingFlg) throws SQLException {
 
         try {
 
@@ -272,7 +286,8 @@ public class W01SelectTableData {
             // ファイル名を作成
             String fileName = tablebName + W01CommonConst.FILE_NM_DATA + fileNow;
 
-            String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH); // ログインパスワード
+            // 出力パス
+            String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH);
 
             File fileWriter = new File(path + fileName + W01CommonConst.CONST_EXTENSION_CSV);
 
@@ -318,47 +333,21 @@ public class W01SelectTableData {
                     printWriter.println();
                     // カラム数分繰り返す
                     int j = 0;
-                    for (String clmn2 : clmnAry) {
+                    for (String clmn : clmnAry) {
                         // データ部のデータをcsvファイルに値を入れる
                         j++;
                         if (columnCount == j) {
-                            printWriter.print(resultSet.getObject(clmn2));
+                            printWriter.print(resultSet.getObject(clmn));
                         } else {
-                            printWriter.print(resultSet.getObject(clmn2));
+                            printWriter.print(resultSet.getObject(clmn));
                             // データの間にカンマを挿入
                             printWriter.print(W01CommonConst.CONST_ST_COMMA);
                         }
                     }
                 }
 
-                W01CommonUtil message = new W01CommonUtil();
-                if (W01CommonConst.SELECT_NINE.equals(num)) {
-                    message.outMessage("I00", "1：TSVファイル");
-                    message.outMessage("I00", "2：EXCELファイル");
-                    message.outMessage("I04", "出力先にしたいファイルの形");
-                    Scanner scan = new Scanner(System.in);
-                    int numSelect = scan.nextInt();
-
-                    // ファイルパスをファイル型から文字列型へ変更
-                    String filePath = fileWriter.toString();
-
-                    switch (numSelect) {
-
-                    // TSVファイル変換を行う
-                    case W01CommonConst.NUM_ONE:
-                        W01ConvertFileCsvToTsv.FileCheck(filePath, num);
-
-                        // エビデンス成型を行う
-                    case W01CommonConst.NUM_TWO:
-                        W01ShapeEvidence.EvidenceOutput(filePath);
-
-                        // それ以外
-                    default:
-                        message.outMessage("E04", "1～2で");
-                        // 異常終了の場合は1を返す
-                        return W01CommonConst.ERROR;
-                    }
-
+                if (interLockingFlg) {
+                    selectFileData(fileWriter, interLockingFlg);
                 }
 
             } catch (SQLException e) {
@@ -370,7 +359,9 @@ public class W01SelectTableData {
                 return W01CommonConst.ERROR;
             }
             printWriter.close();
-        } catch (IOException ex) {
+        } catch (
+
+        IOException ex) {
             // 例外時処理
             ex.printStackTrace();
             W01CommonUtil message = new W01CommonUtil();
@@ -390,6 +381,46 @@ public class W01SelectTableData {
     }
 
     /**
+     * ファイル名を連携するメソッド
+     * @param file（CSVファイルパス）
+     * @param interLockingFlg（連動機能と判別させるフラグ）
+     * @return なし
+     */
+    @SuppressWarnings("resource")
+    private static String selectFileData(File file, boolean interLockingFlg) {
+        while (true) {
+            message.outMessage("I00", "1：TSVファイル");
+            message.outMessage("I00", "2：EXCELファイル");
+            message.outMessage("I04", "出力先にしたいファイルの形");
+            Scanner scan = new Scanner(System.in);
+            String numSelect = scan.next();
+
+            // ファイルパスをファイル型から文字列型へ変更
+            String filePath = file.toString();
+
+            // ファイル名からファイルパスを取得
+            String fileName = new File(filePath).getName();
+
+            switch (numSelect) {
+            // TSVファイル変換を行う
+            case W01CommonConst.SELECT_FILE_ONE:
+                W01ConvertFileCsvToTsv.convertFileCsvToTsv(fileName, interLockingFlg);
+
+                // エビデンス成型を行う
+            case W01CommonConst.SELECT_FILE_TWO:
+                W01ShapeEvidence.evidenceOutput(filePath);
+
+                // それ以外
+            default:
+                message.outMessage("E04", "1～2で");
+                // 異常終了の場合は1を返す
+                continue;
+            }
+        }
+
+    }
+
+    /**
      * テーブルのデータを追加するメソッド
      * @param numTable（入力された数値）
      * @return String（SUCCESS:正常終了 ERROR:異常終了）
@@ -397,7 +428,6 @@ public class W01SelectTableData {
      */
     @SuppressWarnings("resource")
     private static String addData(String numTable) throws SQLException, IOException {
-        W01CommonUtil message = new W01CommonUtil();
         // CSVファイルのファイル名を取得
         message.outMessage("I03", "CSVファイル名");
         Scanner scan = new Scanner(System.in);
@@ -409,16 +439,16 @@ public class W01SelectTableData {
         String extension = W01CommonConst.CONST_EXTENSION_CSV;
 
         // インプットファイルの確認
-        if (W01CommonUtil.checkInputPath(filePath,
-                W01CommonConst.CONST_EXTENSION_CSV) == W01CommonConst.FCHECK_ERROR_EXT) {
+        if (W01CommonConst.FCHECK_ERROR_EXT == W01CommonUtil.checkInputPath(filePath,
+                W01CommonConst.CONST_EXTENSION_CSV)) {
             message.outMessage("I03", extension + "ファイル");
             return W01CommonConst.ERROR;
-        } else if (W01CommonUtil.checkInputPath(filePath,
-                W01CommonConst.CONST_EXTENSION_CSV) == W01CommonConst.FCHECK_ERROR_EXS) {
+        } else if (W01CommonConst.FCHECK_ERROR_EXS == W01CommonUtil.checkInputPath(filePath,
+                W01CommonConst.CONST_EXTENSION_CSV)) {
             message.outMessage("I03", "正しい格納先（絶対パス）");
             return W01CommonConst.ERROR;
-        } else if (W01CommonUtil.checkInputPath(filePath,
-                W01CommonConst.CONST_EXTENSION_CSV) == W01CommonConst.FCHECK_ERROR_EMP) {
+        } else if (W01CommonConst.FCHECK_ERROR_EMP == W01CommonUtil.checkInputPath(filePath,
+                W01CommonConst.CONST_EXTENSION_CSV)) {
             message.outMessage("E03", "ファイル内にデータ");
             return W01CommonConst.ERROR;
         }
@@ -442,29 +472,30 @@ public class W01SelectTableData {
         //読み込み行
         String line;
 
+        String insertSql = W01CommonConst.TBL_INSERT_ONE;
+
         // 1行ずつCSVファイルを読み込む
         while ((line = br.readLine()) != null) {
+            String sql = W01CommonConst.TBL_INSERT_TWO + line + W01CommonConst.TBL_INSERT_THREE;
+
             switch (numTable) {
             // 社員情報
             case W01CommonConst.TBL_CH_ONE:
 
-                String sql1 = W01CommonConst.TBL_INSERT_ONE + W01CommonConst.TBL_NM_EMPLOYEE
-                        + W01CommonConst.TBL_INSERT_TWO + line + W01CommonConst.TBL_INSERT_THREE;
-                statement.executeUpdate(sql1);
+                String employeeSql = insertSql + W01CommonConst.TBL_NM_EMPLOYEE + sql;
+                statement.executeUpdate(employeeSql);
 
                 // 部署コード
             case W01CommonConst.TBL_CH_TWO:
 
-                String sql2 = W01CommonConst.TBL_INSERT_ONE + W01CommonConst.TBL_NM_DIVISION
-                        + W01CommonConst.TBL_INSERT_TWO + line + W01CommonConst.TBL_INSERT_THREE;
-                statement.executeUpdate(sql2);
+                String devisionSql = insertSql + W01CommonConst.TBL_NM_DIVISION + sql;
+                statement.executeUpdate(devisionSql);
 
                 // 役職コード
             case W01CommonConst.TBL_CH_THREE:
 
-                String sql3 = W01CommonConst.TBL_INSERT_ONE + W01CommonConst.TBL_NM_POST
-                        + W01CommonConst.TBL_INSERT_TWO + line + W01CommonConst.TBL_INSERT_THREE;
-                statement.executeUpdate(sql3);
+                String postSql = insertSql + W01CommonConst.TBL_NM_POST + sql;
+                statement.executeUpdate(postSql);
 
             default:
                 message.outMessage("E02", "TBL呼び出し");
@@ -497,13 +528,15 @@ public class W01SelectTableData {
         Connection connection = WISS1CommonUtil.getConnection();
         Statement statement = connection.createStatement();
 
+        String deleteSql = W01CommonConst.TBL_DELETE_ALL;
+
         switch (numTable) {
         // 社員情報
         case W01CommonConst.TBL_CH_ONE:
 
             // SQL文を定義する
-            String sql1 = W01CommonConst.TBL_DELETE_ALL + W01CommonConst.TBL_NM_EMPLOYEE;
-            statement.executeUpdate(sql1);
+            String employeeSql = deleteSql + W01CommonConst.TBL_NM_EMPLOYEE;
+            statement.executeUpdate(employeeSql);
 
             // 正常終了の場合は0を返す
             return W01CommonConst.SUCCESS;
@@ -512,17 +545,16 @@ public class W01SelectTableData {
         case W01CommonConst.TBL_CH_TWO:
 
             // SQL文を定義する
-            String sql2 = W01CommonConst.TBL_DELETE_ALL + W01CommonConst.TBL_NM_DIVISION;
-            statement.executeUpdate(sql2);
+            String devisionSql = deleteSql + W01CommonConst.TBL_NM_DIVISION;
+            statement.executeUpdate(devisionSql);
             // 正常終了の場合は0を返す
             return W01CommonConst.SUCCESS;
 
         // 役職コード
         case W01CommonConst.TBL_CH_THREE:
             // SQL文を定義する
-            String sql3 = W01CommonConst.TBL_DELETE_ALL + W01CommonConst.TBL_NM_POST;
-
-            statement.executeUpdate(sql3);
+            String postSql = deleteSql + W01CommonConst.TBL_NM_POST;
+            statement.executeUpdate(postSql);
 
             // 正常終了の場合は0を返す
             return W01CommonConst.SUCCESS;

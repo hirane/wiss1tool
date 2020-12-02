@@ -284,4 +284,14 @@ public class W01CommonConst {
      */
     public static final String SELECT_NINE = "9";
 
+    /**
+     * ファイルの形（TSV）
+     */
+    public static final String SELECT_FILE_ONE = "1";
+
+    /**
+     * ファイルの形（Excel）
+     */
+    public static final String SELECT_FILE_TWO = "2";
+
 }

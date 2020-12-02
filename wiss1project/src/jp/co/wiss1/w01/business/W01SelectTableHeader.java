@@ -33,7 +33,7 @@ public class W01SelectTableHeader {
      * @return String（0:正常終了 1:異常終了）
      */
     @SuppressWarnings("resource")
-    public String main() {
+    public String selectTableHeader() {
         ResultSet rset = null;
 
         // DB接続する
