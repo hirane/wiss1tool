@@ -25,9 +25,9 @@ public class W01ShapeEvidence {
      * @param なし
      * @return String（0:正常終了 1:異常終了）
      */
+    W01CommonUtil message = new W01CommonUtil();
     @SuppressWarnings("resource")
-    public String main() {
-        W01CommonUtil message = new W01CommonUtil();
+	public String main() {
 
         // 全件を対象にするか選択
         message.outMessage("I06", "フォルダ内の全て");
@@ -35,26 +35,26 @@ public class W01ShapeEvidence {
         message.outMessage("I00", W01CommonConst.TWO_NO);
 
         Scanner scan = new Scanner(System.in);
-        int num1 = scan.nextInt();
+        int yesOrNo = scan.nextInt();
 
-        switch (num1) {
+        switch (yesOrNo) {
 
-        // フォルダ内のすべてを対象にする
+        // フォルダ内のすべてを対象にする（W01CommonConst.ONE_YES）
         case W01CommonConst.NUM_ONE:
             // 対象にするファイルを選択させる
             message.outMessage("I04", "対象にするファイル");
             message.outMessage("I00", W01CommonConst.ONE_TSV);
             message.outMessage("I00", W01CommonConst.TWO_CSV);
-            int num2 = scan.nextInt();
+            int tsvOrCsv = scan.nextInt();
             // 対象をtsvにするかcsvにするか判断
-            switch (num2) {
+            switch (tsvOrCsv) {
 
-            // フォルダ内のtsvファイルを対象にする
+            // フォルダ内のtsvファイルを対象にする （W01CommonConst.ONE_TSV）
             case W01CommonConst.NUM_ONE:
-                AllFileSorting(num2);
-                // フォルダ内のcsvファイルを対象にする
+                allFileSorting(tsvOrCsv);
+                // フォルダ内のcsvファイルを対象にする（W01CommonConst.TWO_CSV）
             case W01CommonConst.NUM_TWO:
-                AllFileSorting(num2);
+                allFileSorting(tsvOrCsv);
             default:
                 W01CommonUtil messege = new W01CommonUtil();
                 messege.outMessage("E04", "1または2");
@@ -62,7 +62,7 @@ public class W01ShapeEvidence {
                 return W01CommonConst.ERROR;
             }
 
-            // フォルダ内のすべてを対象にしない
+        // フォルダ内のすべてを対象にしない（W01CommonConst.TWO_NO）
         case W01CommonConst.NUM_TWO:
             //ファイル名を入力させる
             message.outMessage("I03", "変換したいファイル名");
@@ -75,7 +75,7 @@ public class W01ShapeEvidence {
             // ファイルパスとファイル名の結合
             String fileNamePath = (path + fileName);
 
-            EvidenceOutput(fileNamePath);
+            evidenceOutput(fileNamePath);
         default:
             W01CommonUtil messege = new W01CommonUtil();
             messege.outMessage("E04", "1または2");
@@ -91,17 +91,16 @@ public class W01ShapeEvidence {
      * @param str 絶対パス
      * @return 処理結果を返却する
      */
-    @SuppressWarnings("unused")
-    public static String EvidenceOutput(String str) {
+    public static String evidenceOutput(String str) {
+    	W01CommonUtil message = new W01CommonUtil();
 
-        W01CommonUtil message = new W01CommonUtil();
         //インプットファイルのチェック
         int result = W01CommonUtil.checkInputPath(str, W01CommonConst.CONST_EXTENSION_CSV);
         // 異なる拡張子を入力された場合
         if (result == W01CommonConst.FCHECK_ERROR_EXT) {
             result = W01CommonUtil.checkInputPath(str, W01CommonConst.CONST_EXTENSION_TSV);
             if (result == W01CommonConst.FCHECK_ERROR_EXT) {
-                message.outMessage("E04", "csvファイルもしくはtsvファイルの格納先（絶対パス）");
+            	message.outMessage("E04", "csvファイルもしくはtsvファイルの格納先（絶対パス）");
                 //異常終了
                 return W01CommonConst.ERROR;
             }
@@ -147,10 +146,10 @@ public class W01ShapeEvidence {
 
     /**
      * フォルダ内一括処理
-     * @param num2（ファイルの種類）
+     * @param tsvOrCsv（ファイルの種類）
      * @return 処理結果を返却する
      */
-    public String AllFileSorting(int num2) {
+    public String allFileSorting(int tsvOrCsv) {
 
         String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH); // ログインパスワード
 
@@ -179,15 +178,15 @@ public class W01ShapeEvidence {
                 }
             }
         }
-        if (W01CommonConst.NUM_ONE == num2) {
+        if (W01CommonConst.NUM_ONE == tsvOrCsv) {
             // フォルダ内のtsvファイル分繰り返す
             for (String tsvFile : tsvList) {
-                EvidenceOutput(tsvFile);
+                evidenceOutput(tsvFile);
             }
         } else {
             // フォルダ内のcsvファイル分繰り返す
             for (String csvFile : csvList) {
-                EvidenceOutput(csvFile);
+                evidenceOutput(csvFile);
             }
         }
         // 正常終了の場合は0を返す
