@@ -110,7 +110,7 @@ public class W01ConvertFileCsvToTsv {
 
                     // エビデンス成型処理を行う
                     case W01CommonConst.OPE_CH_ONE:
-                        W01ShapeEvidence.EvidenceOutput(createFile);
+                        W01ShapeEvidence.evidenceOutput(createFile);
 
                     case W01CommonConst.OPE_CH_TWO:
                         return W01CommonConst.SUCCESS;
