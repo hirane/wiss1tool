@@ -19,98 +19,100 @@ import jp.co.wiss1.w01.common.W01CommonUtil;
  */
 public class W01ShapeEvidence {
 
+    static W01CommonUtil message = new W01CommonUtil();
+
     /**
      * エビデンス整形（EXCEL出力）するマクロの呼出しの主処理
      *
      * @param なし
      * @return String（0:正常終了 1:異常終了）
      */
-    W01CommonUtil message = new W01CommonUtil();
     @SuppressWarnings("resource")
-	public String main() {
+    public String main() {
 
-        // 全件を対象にするか選択
-        message.outMessage("I06", "フォルダ内の全て");
-        message.outMessage("I00", W01CommonConst.ONE_YES);
-        message.outMessage("I00", W01CommonConst.TWO_NO);
+        while (true) {
 
-        Scanner scan = new Scanner(System.in);
-        int yesOrNo = scan.nextInt();
+            // 全件を対象にするか選択
+            message.outMessage("I06", "フォルダ内の全て");
+            message.outMessage("I00", W01CommonConst.ONE_YES);
+            message.outMessage("I00", W01CommonConst.TWO_NO);
 
-        switch (yesOrNo) {
+            Scanner scan = new Scanner(System.in);
+            String yesOrNo = scan.toString();
 
-        // フォルダ内のすべてを対象にする（W01CommonConst.ONE_YES）
-        case W01CommonConst.NUM_ONE:
-            // 対象にするファイルを選択させる
-            message.outMessage("I04", "対象にするファイル");
-            message.outMessage("I00", W01CommonConst.ONE_TSV);
-            message.outMessage("I00", W01CommonConst.TWO_CSV);
-            int tsvOrCsv = scan.nextInt();
-            // 対象をtsvにするかcsvにするか判断
-            switch (tsvOrCsv) {
+            switch (yesOrNo) {
 
-            // フォルダ内のtsvファイルを対象にする （W01CommonConst.ONE_TSV）
-            case W01CommonConst.NUM_ONE:
-                allFileSorting(tsvOrCsv);
-                // フォルダ内のcsvファイルを対象にする（W01CommonConst.TWO_CSV）
-            case W01CommonConst.NUM_TWO:
-                allFileSorting(tsvOrCsv);
+            // フォルダ内のすべてを対象にする（W01CommonConst.ONE_YES）
+            case W01CommonConst.OPE_CH_ONE:
+                // 対象にするファイルを選択させる
+                message.outMessage("I04", "対象にするファイル");
+                message.outMessage("I00", W01CommonConst.ONE_TSV);
+                message.outMessage("I00", W01CommonConst.TWO_CSV);
+                String tsvOrCsv = scan.toString();
+                // 対象をtsvにするかcsvにするか判断
+                switch (tsvOrCsv) {
+
+                // フォルダ内のtsvファイルを対象にする （W01CommonConst.ONE_TSV）
+                case W01CommonConst.OPE_CH_ONE:
+                    allFileSorting(tsvOrCsv);
+                    // フォルダ内のcsvファイルを対象にする（W01CommonConst.TWO_CSV）
+                case W01CommonConst.OPE_CH_TWO:
+                    allFileSorting(tsvOrCsv);
+                default:
+                    W01CommonUtil messege = new W01CommonUtil();
+                    messege.outMessage("E04", "1または2");
+                    // 異常終了の場合は1を返す
+                    return W01CommonConst.ERROR;
+                }
+
+                // フォルダ内のすべてを対象にしない（W01CommonConst.TWO_NO）
+            case W01CommonConst.OPE_CH_TWO:
+                //ファイル名を入力させる
+                message.outMessage("I03", "変換したいファイル名");
+                Scanner sc = new Scanner(System.in);
+                String fileName = sc.next();
+
+                // プロパティからファイルパスを読み込む
+                String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH);
+
+                // ファイルパスとファイル名の結合
+                String fileNamePath = (path + fileName);
+
+                evidenceOutput(fileNamePath);
             default:
                 W01CommonUtil messege = new W01CommonUtil();
                 messege.outMessage("E04", "1または2");
                 // 異常終了の場合は1を返す
                 return W01CommonConst.ERROR;
+
             }
-
-        // フォルダ内のすべてを対象にしない（W01CommonConst.TWO_NO）
-        case W01CommonConst.NUM_TWO:
-            //ファイル名を入力させる
-            message.outMessage("I03", "変換したいファイル名");
-            Scanner sc = new Scanner(System.in);
-            String fileName = sc.next();
-
-            // プロパティからファイルパスを読み込む
-            String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH);
-
-            // ファイルパスとファイル名の結合
-            String fileNamePath = (path + fileName);
-
-            evidenceOutput(fileNamePath);
-        default:
-            W01CommonUtil messege = new W01CommonUtil();
-            messege.outMessage("E04", "1または2");
-            // 異常終了の場合は1を返す
-            return W01CommonConst.ERROR;
-
         }
-
     }
 
     /**
      * ファイルの拡張子・存在・サイズをチェックし、エビデンスを整形
-     * @param str 絶対パス
+     * @param filePath 絶対パス
      * @return 処理結果を返却する
      */
-    public static String evidenceOutput(String str) {
-    	W01CommonUtil message = new W01CommonUtil();
+    public static String evidenceOutput(String filePath) {
 
         //インプットファイルのチェック
-        int result = W01CommonUtil.checkInputPath(str, W01CommonConst.CONST_EXTENSION_CSV);
+        int result = W01CommonUtil.checkInputPath(filePath, W01CommonConst.CONST_EXTENSION_CSV);
         // 異なる拡張子を入力された場合
         if (result == W01CommonConst.FCHECK_ERROR_EXT) {
-            result = W01CommonUtil.checkInputPath(str, W01CommonConst.CONST_EXTENSION_TSV);
+            result = W01CommonUtil.checkInputPath(filePath, W01CommonConst.CONST_EXTENSION_TSV);
             if (result == W01CommonConst.FCHECK_ERROR_EXT) {
-            	message.outMessage("E04", "csvファイルもしくはtsvファイルの格納先（絶対パス）");
+                message.outMessage("E04", "csvファイルもしくはtsvファイルの格納先（絶対パス）");
                 //異常終了
                 return W01CommonConst.ERROR;
             }
-        // ファイルが存在しない場合
+            // ファイルが存在しない場合
         } else if (result == W01CommonConst.FCHECK_ERROR_EXS) {
             message.outMessage("E03", "ファイル");
             //異常終了
             return W01CommonConst.ERROR;
 
-        // ファイルが空の場合
+            // ファイルが空の場合
         } else if (result == W01CommonConst.FCHECK_ERROR_EMP) {
             message.outMessage("E03", "ファイル内にデータ");
             //異常終了
@@ -123,7 +125,7 @@ public class W01ShapeEvidence {
             // 処理を走らせる 実行する為のメソッド
             Runtime rt = Runtime.getRuntime();
             // マクロの実行
-            Process process = rt.exec(W01CommonConst.COMMAND + " " + str);
+            Process process = rt.exec(W01CommonConst.COMMAND + " " + filePath);
             // waitFor 処理が終わったら0を返す 1だったら異常終了
             int ret = process.waitFor();
             if (ret == W01CommonConst.NUM_ZERO) {
@@ -149,22 +151,29 @@ public class W01ShapeEvidence {
      * @param tsvOrCsv（ファイルの種類）
      * @return 処理結果を返却する
      */
-    public String allFileSorting(int tsvOrCsv) {
+    public String allFileSorting(String tsvOrCsv) {
 
         String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH); // ログインパスワード
 
         File file1 = new File(path);
         // ファイルオブジェクトを配列で取得
-        File [] fileArray1 = file1.listFiles();
+        File[] fileArray = file1.listFiles();
         // 判別した後のtsvファイル名を入れるリスト
         List<String> tsvList = new ArrayList<String>(0);
         // 判別した後のcsvファイル名を入れるリスト
         List<String> csvList = new ArrayList<String>(0);
+
+        // ファイルが存在しなかった場合
+        if (fileArray == null) {
+            message.outMessage("E03", "対象となるファイル");
+            // 異常終了
+            return W01CommonConst.ERROR;
+        }
         // ファイルの一覧を取得
-        for (File f : fileArray1) {
+        for (File f : fileArray) {
             // isFileメソッドでファイルを判別
             if (f.isFile()) {
-                // System.out.println(f.toString());//ファイルを表示
+                System.out.println(f.toString());//ファイルを表示
                 String fileName = f.toString();
 
                 //拡張子判断
@@ -178,17 +187,20 @@ public class W01ShapeEvidence {
                 }
             }
         }
-        if (W01CommonConst.NUM_ONE == tsvOrCsv) {
+        if (W01CommonConst.OPE_CH_ONE == tsvOrCsv) {
             // フォルダ内のtsvファイル分繰り返す
             for (String tsvFile : tsvList) {
                 evidenceOutput(tsvFile);
             }
-        } else {
+        } else if (W01CommonConst.OPE_CH_TWO == tsvOrCsv) {
             // フォルダ内のcsvファイル分繰り返す
             for (String csvFile : csvList) {
                 evidenceOutput(csvFile);
             }
+        } else {
+            return W01CommonConst.ERROR;
         }
+
         // 正常終了の場合は0を返す
         return W01CommonConst.SUCCESS;
     }
