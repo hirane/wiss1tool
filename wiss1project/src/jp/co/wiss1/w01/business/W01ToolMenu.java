@@ -95,7 +95,7 @@ public class W01ToolMenu {
             } else if ("3".equals(str)) {
                 // エビデンス成型
                 W01ShapeEvidence w01ShapeEvidence = new W01ShapeEvidence();
-                result = w01ShapeEvidence.main();
+                result = w01ShapeEvidence.shapeEvidence();
             } else if ("9".equals(str)) {
                 // テーブルデータ取得
                 W01SelectTableData w01SelectTableData = new W01SelectTableData();

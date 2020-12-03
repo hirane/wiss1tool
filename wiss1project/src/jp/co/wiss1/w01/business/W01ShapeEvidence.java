@@ -28,7 +28,7 @@ public class W01ShapeEvidence {
      * @return String（0:正常終了 1:異常終了）
      */
     @SuppressWarnings("resource")
-    public String main() {
+    public String shapeEvidence() {
 
         while (true) {
 
@@ -38,7 +38,7 @@ public class W01ShapeEvidence {
             message.outMessage("I00", W01CommonConst.TWO_NO);
 
             Scanner scan = new Scanner(System.in);
-            String yesOrNo = scan.toString();
+            String yesOrNo = scan.next();
 
             switch (yesOrNo) {
 
@@ -48,7 +48,7 @@ public class W01ShapeEvidence {
                 message.outMessage("I04", "対象にするファイル");
                 message.outMessage("I00", W01CommonConst.ONE_TSV);
                 message.outMessage("I00", W01CommonConst.TWO_CSV);
-                String tsvOrCsv = scan.toString();
+                String tsvOrCsv = scan.next();
                 // 対象をtsvにするかcsvにするか判断
                 switch (tsvOrCsv) {
 
@@ -78,7 +78,7 @@ public class W01ShapeEvidence {
                 // ファイルパスとファイル名の結合
                 String fileNamePath = (path + fileName);
 
-                evidenceOutput(fileNamePath);
+                return evidenceOutput(fileNamePath);
             default:
                 W01CommonUtil messege = new W01CommonUtil();
                 messege.outMessage("E04", "1または2");
