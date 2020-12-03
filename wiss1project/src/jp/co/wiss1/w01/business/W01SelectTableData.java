@@ -62,7 +62,6 @@ public class W01SelectTableData {
 
             }
 
-            System.out.println(interLockingFlg);
             while (true) {
                 String numData = "1";
 
@@ -346,10 +345,6 @@ public class W01SelectTableData {
                     }
                 }
 
-                if (interLockingFlg) {
-                    selectFileData(fileWriter, interLockingFlg);
-                }
-
             } catch (SQLException e) {
                 // 例外発生時の処理
                 e.printStackTrace(); // エラー内容をコンソールに出力する
@@ -359,6 +354,10 @@ public class W01SelectTableData {
                 return W01CommonConst.ERROR;
             }
             printWriter.close();
+
+            if (interLockingFlg) {
+                selectFileData(fileWriter, interLockingFlg);
+            }
         } catch (
 
         IOException ex) {
