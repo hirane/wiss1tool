@@ -280,11 +280,6 @@ public class W01CommonConst {
     public static final String OPE_CH_THREE = "3";
 
     /**
-     * 連動機能_9
-     */
-    public static final String SELECT_NINE = "9";
-
-    /**
      * ファイルの形（TSV）
      */
     public static final String SELECT_FILE_ONE = "1";
@@ -293,5 +288,10 @@ public class W01CommonConst {
      * ファイルの形（Excel）
      */
     public static final String SELECT_FILE_TWO = "2";
+
+    /**
+     * 選択肢（1～2）
+     */
+    public static final String SELECT_ONE_AND_TWO = "1または2で";
 
 }
