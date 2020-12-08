@@ -39,7 +39,7 @@ public class W01ConvertFileCsvToTsv {
         // ファイルパスとファイル名の結合
         String inputFile = (path + fileName);
 
-        return fileCheck(inputFile, interlockingFlg);
+        return checkFile(inputFile, interlockingFlg);
 
     }
 
@@ -49,11 +49,10 @@ public class W01ConvertFileCsvToTsv {
      * @return 処理結果を返却する
      */
     @SuppressWarnings("resource")
-    public static String fileCheck(String csvFile, boolean interlockingFlg) {
+    public static String checkFile(String csvFile, boolean interlockingFlg) {
         // 新ファイルの拡張子書き換え
-        String createFile =
-                csvFile.replace(W01CommonConst.CONST_EXTENSION_CSV,
-                        W01CommonConst.CONST_EXTENSION_TSV);
+        String createFile = csvFile.replace(W01CommonConst.CONST_EXTENSION_CSV,
+                W01CommonConst.CONST_EXTENSION_TSV);
 
         // CSVファイルの読み込み
         File fInputCsv = new File(csvFile);
@@ -63,13 +62,16 @@ public class W01ConvertFileCsvToTsv {
             //ファイルのチェックメソッド （0：正常、1：拡張子エラー、2:ファイルなしエラー、3:ファイル0バイトエラー）
             String extension = W01CommonConst.CONST_EXTENSION_CSV;
 
-            if (W01CommonUtil.checkInputPath(csvFile, extension) == W01CommonConst.FCHECK_ERROR_EXT) {
+            if (W01CommonUtil.checkInputPath(csvFile,
+                    extension) == W01CommonConst.FCHECK_ERROR_EXT) {
                 message.outMessage("I03", extension + "ファイル");
                 return W01CommonConst.ERROR;
-            } else if (W01CommonUtil.checkInputPath(csvFile, extension) == W01CommonConst.FCHECK_ERROR_EXS) {
+            } else if (W01CommonUtil.checkInputPath(csvFile,
+                    extension) == W01CommonConst.FCHECK_ERROR_EXS) {
                 message.outMessage("I03", "正しい格納先（絶対パス）");
                 return W01CommonConst.ERROR;
-            } else if (W01CommonUtil.checkInputPath(csvFile, extension) == W01CommonConst.FCHECK_ERROR_EMP) {
+            } else if (W01CommonUtil.checkInputPath(csvFile,
+                    extension) == W01CommonConst.FCHECK_ERROR_EMP) {
                 message.outMessage("E03", "ファイル内にデータ");
                 return W01CommonConst.ERROR;
             }
@@ -85,9 +87,8 @@ public class W01ConvertFileCsvToTsv {
             while ((lineBefore = br.readLine()) != null) {
 
                 // カンマ区切りからタブ区切りへ
-                String lineAfter =
-                        lineBefore.replace(W01CommonConst.CONST_ST_COMMA,
-                                W01CommonConst.CONST_ST_TAB);
+                String lineAfter = lineBefore.replace(W01CommonConst.CONST_ST_COMMA,
+                        W01CommonConst.CONST_ST_TAB);
 
                 // タブ区切りにしたものを書き込み
                 pOutputTsv.print(lineAfter);
@@ -110,15 +111,16 @@ public class W01ConvertFileCsvToTsv {
 
                     // エビデンス成型処理を行う
                     case W01CommonConst.OPE_CH_ONE:
-                        W01ShapeEvidence.evidenceOutput(createFile);
+                        // TSVファイル名を渡す(絶対パス)
+                        return W01ShapeEvidence.evidenceOutput(createFile);
 
                     case W01CommonConst.OPE_CH_TWO:
                         return W01CommonConst.SUCCESS;
 
-                        // それ以外
+                    // それ以外
                     default:
-                        W01CommonUtil messege = new W01CommonUtil();
-                        messege.outMessage("E04", "1~2で");
+
+                        message.outMessage("E04", W01CommonConst.SELECT_ONE_AND_TWO);
                         // 異常終了の場合は1を返す
                         return W01CommonConst.ERROR;
                     }
@@ -143,7 +145,7 @@ public class W01ConvertFileCsvToTsv {
         // selectNumは連動機能と判別させる数値
         boolean interlockingFlg = false;
         for (String csvFile : csvList) {
-            return fileCheck(csvFile, interlockingFlg);
+            return checkFile(csvFile, interlockingFlg);
         }
         message.outMessage("I01", "CSVからTSVへのファイル変換");
         // 正常終了の場合は0を返す

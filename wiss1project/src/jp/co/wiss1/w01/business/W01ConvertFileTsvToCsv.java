@@ -37,7 +37,7 @@ public class W01ConvertFileTsvToCsv {
         String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH);
         // ファイルパスとファイル名の結合
         String inputFile = (path + fileName);
-        return fileCheck(inputFile);
+        return checkFile(inputFile);
     }
 
     /**
@@ -47,7 +47,7 @@ public class W01ConvertFileTsvToCsv {
     *            読み込み対象ファイル名
     * @return List<String[]> 読み込み対象ファイルの内容
     */
-    public static String fileCheck(String inputFile) {
+    public static String checkFile(String inputFile) {
         // ファイルのチェック
         int inFile = W01CommonUtil.checkInputPath(inputFile, W01CommonConst.CONST_EXTENSION_TSV);
         // 拡張子チェック
@@ -64,9 +64,8 @@ public class W01ConvertFileTsvToCsv {
             return W01CommonConst.ERROR;
         }
         // ファイル名をTSVをCSVに変換
-        String createFile =
-                inputFile.replace(W01CommonConst.CONST_EXTENSION_TSV,
-                        W01CommonConst.CONST_EXTENSION_CSV);
+        String createFile = inputFile.replace(W01CommonConst.CONST_EXTENSION_TSV,
+                W01CommonConst.CONST_EXTENSION_CSV);
         // tsvファイル読み込みメソッドを呼び出し
         List<String> contentsList = readFile(inputFile);
         if (contentsList == null) {
@@ -93,9 +92,8 @@ public class W01ConvertFileTsvToCsv {
         try {
             File file = new File(readFileName);
             String str = null;
-            BufferedReader br =
-                    new BufferedReader(new InputStreamReader(new FileInputStream(file),
-                            W01CommonConst.CONST_CHAR_CODE_UTF8));
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file),
+                    W01CommonConst.CONST_CHAR_CODE_UTF8));
 
             // 読み込み対象ファイルの内容をリストに追加
             while ((str = br.readLine()) != null) {
@@ -127,9 +125,8 @@ public class W01ConvertFileTsvToCsv {
     public static String createCsv(String createFileName, List<String> contentsList) {
         PrintWriter pw = null;
         try {
-            pw =
-                    new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                            createFileName), W01CommonConst.CONST_CHAR_CODE_UTF8)));
+            pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(createFileName), W01CommonConst.CONST_CHAR_CODE_UTF8)));
 
             // ,を追加し、ファイル出力
             for (String tmpStringArray : contentsList) {
@@ -141,8 +138,10 @@ public class W01ConvertFileTsvToCsv {
             message.outMessage("I01", "TSVファイルからCSVファイルへの変換");
             // 正常終了の場合は0を返す
             return W01CommonConst.SUCCESS;
-        } catch (Exception e) {            // 異常終了
-            message.outMessage("E02", "TSVファイルからCSVファイルへの変換");;
+        } catch (Exception e) {
+            // 異常終了
+            message.outMessage("E02", "TSVファイルからCSVファイルへの変換");
+            ;
             // ファイル出力で異常終了
             return W01CommonConst.ERROR;
         }
@@ -155,7 +154,7 @@ public class W01ConvertFileTsvToCsv {
      */
     public static String allFileTsvToCsv(List<String> tsvList) {
         for (String tsvFile : tsvList) {
-            return fileCheck(tsvFile);
+            return checkFile(tsvFile);
 
         }
         message.outMessage("I01", "CSVからTSVへのファイル変換");
