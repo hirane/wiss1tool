@@ -56,14 +56,14 @@ public class W01ConvertFileSelect {
                         // 返却値を返す
                         return allFileSorting(selectNum);
 
-                        // フォルダ内のcsvファイルを対象にする
+                    // フォルダ内のcsvファイルを対象にする
                     case W01CommonConst.OPE_CH_TWO:
                         // 返却値を返す
                         return allFileSorting(selectNum);
 
-                        // それ以外
+                    // それ以外
                     default:
-                        message.outMessage("E04", "1~2で");
+                        message.outMessage("E04", W01CommonConst.SELECT_ONE_AND_TWO);
                         // 異常終了の場合は1を返す
                         return W01CommonConst.ERROR;
                     }
@@ -71,11 +71,11 @@ public class W01ConvertFileSelect {
 
             case W01CommonConst.OPE_CH_TWO:
                 // 返却値を返す
-                return fileSelect();
+                return selectFile();
 
-                // それ以外
+            // それ以外
             default:
-                message.outMessage("E04", "1~2で");
+                message.outMessage("E04", W01CommonConst.SELECT_ONE_AND_TWO);
                 // 異常終了の場合は1を返す
                 return W01CommonConst.ERROR;
             }
@@ -88,7 +88,7 @@ public class W01ConvertFileSelect {
      * @return 処理結果を返却する
      */
     @SuppressWarnings("resource")
-    public String fileSelect() {
+    public String selectFile() {
 
         //ファイル名を入力させる
         message.outMessage("I03", "変換したいファイル名");
@@ -128,16 +128,16 @@ public class W01ConvertFileSelect {
 
         File file = new File(path);
         // ファイルオブジェクトを配列で取得
-        File fileArray1[] = file.listFiles();
+        File[] fileArray = file.listFiles();
         // 判別した後のtsvファイル名を入れるリスト
         List<String> tsvList = new ArrayList<String>(0);
         // 判別した後のcsvファイル名を入れるリスト
         List<String> csvList = new ArrayList<String>(0);
         // ファイルの一覧を取得
-        for (File allFile : fileArray1) {
+        for (File allFile : fileArray) {
             // isFileメソッドでファイルを判別
             if (allFile.isFile()) {
-                // System.out.println(f.toString());//ファイルを表示
+                message.outMessage("I00", allFile.toString());//ファイルを表示
                 String fileName = allFile.toString();
 
                 //拡張子判断
