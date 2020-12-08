@@ -173,7 +173,7 @@ public class W01ShapeEvidence {
         for (File f : fileArray) {
             // isFileメソッドでファイルを判別
             if (f.isFile()) {
-                System.out.println(f.toString());//ファイルを表示
+            	message.outMessage("I00",f.toString());//ファイルを表示
                 String fileName = f.toString();
 
                 //拡張子判断

@@ -15,6 +15,8 @@ import jp.co.wiss1.w01.common.W01CommonUtil;
  */
 public class W01ToolMenu {
 
+    static W01CommonUtil message = new W01CommonUtil();
+
     /**
      * mainメソッド
      * ユーザーに入力を促し、選択された値によってクラスを呼び分ける。
@@ -24,8 +26,6 @@ public class W01ToolMenu {
      */
     @SuppressWarnings("resource")
     public static void main(String[] args) throws IOException {
-
-        W01CommonUtil message = new W01CommonUtil();
 
         Scanner scan = new Scanner(System.in);
         // 実行結果
@@ -88,7 +88,7 @@ public class W01ToolMenu {
                         break;
                     } else {
                         // 入力値不正
-                        message.outMessage("I03", "ERROE:1～3");
+                        message.outMessage("I03", "ERROE:該当する番号");
                         newline(2);
                     }
                 }
@@ -137,7 +137,7 @@ public class W01ToolMenu {
     */
     public static void newline(int count) throws IOException {
         for (int i = 0; i < count; i++) {
-            System.out.println("");
+            message.outMessage("I00", " ");
         }
     }
 
