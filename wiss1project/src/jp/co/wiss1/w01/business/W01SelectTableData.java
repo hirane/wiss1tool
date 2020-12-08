@@ -53,11 +53,11 @@ public class W01SelectTableData {
             message.outMessage("I04", "取得したいテーブル");
 
             String numTable = scan.next();
-            //1～3以外を入力したら異常終了で1を返す
-            if (!(numTable.equals(W01CommonConst.TBL_CH_ONE))
-                    && !(numTable.equals(W01CommonConst.TBL_CH_TWO))
-                    && !(numTable.equals(W01CommonConst.TBL_CH_THREE))) {
-                message.outMessage("E04", "1～3");
+            //1から3以外を入力したら異常終了で1を返す
+            if (!(W01CommonConst.TBL_CH_ONE.equals(numTable))
+                    && !(W01CommonConst.TBL_CH_TWO.equals(numTable))
+                    && !(W01CommonConst.TBL_CH_THREE.equals(numTable))) {
+                message.outMessage("E04", "1から3");
                 continue;
 
             }
@@ -87,7 +87,7 @@ public class W01SelectTableData {
                     } else if (W01CommonConst.OPE_CH_THREE.equals(numData)) {
                         returnValue = deleteData(numTable);
                     } else {
-                        message.outMessage("E04", "1～3");
+                        message.outMessage("E04", "1から3");
                         continue;
                     }
                     if (W01CommonConst.ERROR.equals(returnValue)) {
@@ -95,7 +95,7 @@ public class W01SelectTableData {
                     }
                 } catch (SQLException | IOException e) {
                     e.printStackTrace();
-                    message.outMessage("E04", "1～3");
+                    message.outMessage("E04", "1から3");
                     // 異常終了の場合は1を返す
                     return W01CommonConst.ERROR;
 
@@ -124,7 +124,7 @@ public class W01SelectTableData {
             String employeeSql = W01CommonConst.TBL_SELECT_ALL + W01CommonConst.TBL_NM_EMPLOYEE;
 
             ResultSet resultEmployeeSet = resultSetData(employeeSql);
-            if (resultEmployeeSet == null) {
+            if (null == resultEmployeeSet) {
                 return W01CommonConst.ERROR;
             }
 
@@ -148,7 +148,7 @@ public class W01SelectTableData {
             String divisionSql = W01CommonConst.TBL_SELECT_ALL + W01CommonConst.TBL_NM_DIVISION;
 
             ResultSet resultDivisionSet = resultSetData(divisionSql);
-            if (resultDivisionSet == null) {
+            if (null == resultDivisionSet) {
                 return W01CommonConst.ERROR;
             }
 
@@ -172,7 +172,7 @@ public class W01SelectTableData {
             String postSql = W01CommonConst.TBL_SELECT_ALL + W01CommonConst.TBL_NM_POST;
 
             ResultSet resultPostSet = resultSetData(postSql);
-            if (resultPostSet == null) {
+            if (null == resultPostSet) {
                 return W01CommonConst.ERROR;
             }
 
@@ -252,9 +252,9 @@ public class W01SelectTableData {
 
         } finally {
             // クローズ処理
-            if (statement != null)
+            if (null != statement)
                 statement.close();
-            if (connection != null)
+            if (null != connection)
                 connection.close();
         }
         return resultSet;
@@ -301,7 +301,7 @@ public class W01SelectTableData {
                 boolean flg = false;
                 while (resultSet.next()) {
                     // 初回のみ項目名を取得
-                    if (clmnAry == null) {
+                    if (null == clmnAry) {
                         clmnAry = new ArrayList<>();
                         // カラム数とカラム名を取得を取得
                         ResultSetMetaData metaData = resultSet.getMetaData();
@@ -312,7 +312,7 @@ public class W01SelectTableData {
                             clmnAry.add(metaData.getColumnName(i + 1));
                         }
                     }
-                    if (flg == false) {
+                    if (false == flg) {
                         flg = true;
                         int i = 0;
                         // カラム数分繰り返す
@@ -369,7 +369,7 @@ public class W01SelectTableData {
             return W01CommonConst.ERROR;
         } finally {
             // クローズ処理
-            if (resultSet != null)
+            if (null != resultSet)
                 resultSet.close();
         }
 
@@ -411,7 +411,7 @@ public class W01SelectTableData {
 
                 // それ以外
             default:
-                message.outMessage("E04", "1～2で");
+                message.outMessage("E04", "1または2で");
                 // 異常終了の場合は1を返す
                 continue;
             }

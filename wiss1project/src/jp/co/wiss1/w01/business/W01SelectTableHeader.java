@@ -26,6 +26,9 @@ import jp.co.wiss1.w01.common.W01CommonUtil;
  * @version 1.0
  */
 public class W01SelectTableHeader {
+
+    static W01CommonUtil message = new W01CommonUtil();
+
     /**
      * テーブルヘッダー出力の主処理
      *
@@ -44,17 +47,13 @@ public class W01SelectTableHeader {
 
             //3つのヘッダのどれかを選択させる
             // 1：社員情報
-            W01CommonUtil messege1 = new W01CommonUtil();
-            messege1.outMessage("I00", W01CommonConst.TBL_NM_ONE);
+            message.outMessage("I00", W01CommonConst.TBL_NM_ONE);
             // 2：部署コード
-            W01CommonUtil messege2 = new W01CommonUtil();
-            messege2.outMessage("I00", W01CommonConst.TBL_NM_TWO);
+            message.outMessage("I00", W01CommonConst.TBL_NM_TWO);
             // 3：役職コード
-            W01CommonUtil messege3 = new W01CommonUtil();
-            messege3.outMessage("I00", W01CommonConst.TBL_NM_THREE);
+            message.outMessage("I00", W01CommonConst.TBL_NM_THREE);
 
-            W01CommonUtil messege4 = new W01CommonUtil();
-            messege4.outMessage("I00", "取得したいテーブルを選択してください：");
+            message.outMessage("I00", "取得したいテーブルを選択してください：");
 
             String code = sc.nextLine();
 
@@ -62,66 +61,61 @@ public class W01SelectTableHeader {
 
             case W01CommonConst.TBL_CH_ONE:
                 // 社員情報テーブルの値を取得するメソッドを呼び出す
-                String num01 = getTableData(conn, W01CommonConst.TBL_NM_EMPLOYEE, rset);
-                if (num01.equals(W01CommonConst.TBL_CH_ONE)) {
+                String numEmployee = getTableData(conn, W01CommonConst.TBL_NM_EMPLOYEE, rset);
+                if (W01CommonConst.TBL_CH_ONE.equals(numEmployee)) {
                     return W01CommonConst.ERROR;
                 }
                 return W01CommonConst.SUCCESS;
 
             case W01CommonConst.TBL_CH_TWO:
                 // 部署コードテーブルの値を取得するメソッドを呼び出す
-                String num02 = getTableData(conn, W01CommonConst.TBL_NM_DIVISION, rset);
-                if (num02.equals(W01CommonConst.TBL_CH_ONE)) {
+                String numDivision = getTableData(conn, W01CommonConst.TBL_NM_DIVISION, rset);
+                if (W01CommonConst.TBL_CH_ONE.equals(numDivision)) {
                     return W01CommonConst.ERROR;
                 }
                 return W01CommonConst.SUCCESS;
 
             case W01CommonConst.TBL_CH_THREE:
                 //役職コードテーブルの値を取得するメソッドを呼び出す
-                String num03 = getTableData(conn, W01CommonConst.TBL_NM_POST, rset);
-                if (num03.equals(W01CommonConst.TBL_CH_ONE)) {
+                String numPost = getTableData(conn, W01CommonConst.TBL_NM_POST, rset);
+                if (W01CommonConst.TBL_CH_ONE.equals(numPost)) {
                     return W01CommonConst.ERROR;
                 }
                 return W01CommonConst.SUCCESS;
 
-                // 1~3以外ならバッチに戻り値1を返す
+            // 1から3以外ならバッチに戻り値1を返す
             default:
-                W01CommonUtil messege5 = new W01CommonUtil();
-                messege5.outMessage("I00", "01~03で入力してください");
+                message.outMessage("I04", "01から03");
 
                 //table呼び出し失敗メッセージ
-                W01CommonUtil messege = new W01CommonUtil();
-                messege.outMessage("E02", "TBL呼び出し");
+                message.outMessage("E02", "TBL呼び出し");
                 return W01CommonConst.ERROR;
             }
 
             //DB接続失敗時に異常終了のメッセージを表示「
         } catch (SQLException e) {
             e.printStackTrace();
-            W01CommonUtil messege = new W01CommonUtil();
-            messege.outMessage("E02", "DB接続");
+            message.outMessage("E02", "DB接続");
             return W01CommonConst.ERROR;
 
         } finally {
 
             //接続を切断する
-            if (rset != null) {
+            if (null != rset) {
                 try {
                     rset.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    W01CommonUtil messege = new W01CommonUtil();
-                    messege.outMessage("E02", "DB接続");
+                    message.outMessage("E02", "DB接続");
                     return W01CommonConst.ERROR;
                 }
             }
-            if (conn != null) {
+            if (null != conn) {
                 try {
                     conn.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    W01CommonUtil messege = new W01CommonUtil();
-                    messege.outMessage("E02", "DB接続");
+                    message.outMessage("E02", "DB接続");
                     return W01CommonConst.ERROR;
                 }
             }
@@ -140,12 +134,12 @@ public class W01SelectTableHeader {
             throws SQLException {
         DatabaseMetaData dbmd = conn.getMetaData();
 
-        String types[] = { W01CommonConst.PRO_DB_TABLE };
+        String[] types = { W01CommonConst.PRO_DB_TABLE };
         //渡されたカタログ、スキーマ、テーブル名のパターンで使用可能なテーブルの記述を取得します。
         rset = dbmd.getTables(null, null, table, types);
 
         String num = exportCsv(rset, dbmd);
-        if (num.equals(W01CommonConst.TBL_CH_ONE)) {
+        if (W01CommonConst.TBL_CH_ONE.equals(num)) {
             return W01CommonConst.ERROR;
         }
         return W01CommonConst.SUCCESS;
@@ -181,17 +175,16 @@ public class W01SelectTableHeader {
                 StringBuffer sb = new StringBuffer();
 
                 //ファイル格納先
-                String FilePlace = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH);
+                String filePlace = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH);
 
                 //指定のファイル名を生成
-                File fInputCsv =
-                        new File(FilePlace + tableName + W01CommonConst.FILE_NM_HEADER + display
-                                + W01CommonConst.CONST_EXTENSION_CSV);
+                File fInputCsv = new File(filePlace + tableName + W01CommonConst.FILE_NM_HEADER
+                        + display + W01CommonConst.CONST_EXTENSION_CSV);
 
                 //指定された名前のファイルに書き込むためのファイル出力ストリームを作成します。
 
-                PrintWriter pWriter =
-                        new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fInputCsv),W01CommonConst.CONST_CHAR_CODE_UTF8)));
+                PrintWriter pWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(fInputCsv), W01CommonConst.CONST_CHAR_CODE_UTF8)));
 
                 //tableのヘッダ内容を取得
                 ResultSet rsColumns =
@@ -220,14 +213,12 @@ public class W01SelectTableHeader {
             e.printStackTrace();
 
             //出力失敗メッセージ
-            W01CommonUtil messege = new W01CommonUtil();
-            messege.outMessage("E02", "CSVファイル出力");
+            message.outMessage("E02", "CSVファイル出力");
             return W01CommonConst.ERROR;
 
         }
         //正常終了メッセージ
-        W01CommonUtil messege = new W01CommonUtil();
-        messege.outMessage("I01", "ファイルへの出力");
+        message.outMessage("I01", "ファイルへの出力");
         return W01CommonConst.SUCCESS;
     }
 
