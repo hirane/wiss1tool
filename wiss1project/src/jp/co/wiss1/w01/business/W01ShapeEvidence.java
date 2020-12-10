@@ -54,10 +54,10 @@ public class W01ShapeEvidence {
 
                 // フォルダ内のtsvファイルを対象にする （W01CommonConst.ONE_TSV）
                 case W01CommonConst.OPE_CH_ONE:
-                    allFileSorting(tsvOrCsv);
+                    return allFileSorting(tsvOrCsv);
                     // フォルダ内のcsvファイルを対象にする（W01CommonConst.TWO_CSV）
                 case W01CommonConst.OPE_CH_TWO:
-                    allFileSorting(tsvOrCsv);
+                    return allFileSorting(tsvOrCsv);
                 default:
                     W01CommonUtil messege = new W01CommonUtil();
                     messege.outMessage("E04", "1または2");
@@ -173,7 +173,7 @@ public class W01ShapeEvidence {
         for (File f : fileArray) {
             // isFileメソッドでファイルを判別
             if (f.isFile()) {
-            	message.outMessage("I00",f.toString());//ファイルを表示
+                System.out.println(f.toString());//ファイルを表示
                 String fileName = f.toString();
 
                 //拡張子判断
