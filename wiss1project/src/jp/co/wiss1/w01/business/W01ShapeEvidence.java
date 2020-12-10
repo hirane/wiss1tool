@@ -173,7 +173,7 @@ public class W01ShapeEvidence {
         for (File f : fileArray) {
             // isFileメソッドでファイルを判別
             if (f.isFile()) {
-                System.out.println(f.toString());//ファイルを表示
+                message.outMessage("I00",f.toString());//ファイルを表示
                 String fileName = f.toString();
 
                 //拡張子判断
@@ -187,12 +187,12 @@ public class W01ShapeEvidence {
                 }
             }
         }
-        if (W01CommonConst.OPE_CH_ONE == tsvOrCsv) {
+        if (W01CommonConst.OPE_CH_ONE.equals(tsvOrCsv)) {
             // フォルダ内のtsvファイル分繰り返す
             for (String tsvFile : tsvList) {
                 evidenceOutput(tsvFile);
             }
-        } else if (W01CommonConst.OPE_CH_TWO == tsvOrCsv) {
+        } else if (W01CommonConst.OPE_CH_TWO.equals(tsvOrCsv)) {
             // フォルダ内のcsvファイル分繰り返す
             for (String csvFile : csvList) {
                 evidenceOutput(csvFile);
