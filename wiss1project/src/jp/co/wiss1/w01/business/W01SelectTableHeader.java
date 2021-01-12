@@ -37,12 +37,7 @@ public class W01SelectTableHeader {
      */
     @SuppressWarnings("resource")
     public String selectTableHeader() {
-        //ResultSet rset = null;
 
-        // DB接続する
-        //Connection conn = WISS1CommonUtil.getConnection();
-
-        //try {
         Scanner sc = new Scanner(System.in);
 
         //3つのヘッダのどれかを選択させる
@@ -80,14 +75,6 @@ public class W01SelectTableHeader {
             return W01CommonConst.ERROR;
         }
 
-        //DB接続失敗時に異常終了のメッセージを表示
-        //} catch (SQLException e) {
-        //    e.printStackTrace();
-        //    message.outMessage("E02", "DB接続");
-        //    return W01CommonConst.ERROR;
-
-        //}
-
     }
 
     /**
@@ -108,7 +95,6 @@ public class W01SelectTableHeader {
 
             String[] types = { W01CommonConst.PRO_DB_TABLE };
             //渡されたカタログ、スキーマ、テーブル名のパターンで使用可能なテーブルの記述を取得します。
-            //ResultSet rset = dbmd.getTables(null, null, table, types);
             ResultSet rset = dbmd.getTables(null, null, table, types);
 
             String num = exportCsv(rset, dbmd);
@@ -151,7 +137,6 @@ public class W01SelectTableHeader {
         String display = format.format(date);
 
         // 出力ファイルの作成
-        //		FileWriter f;
         try {
 
             while (rs.next()) {
