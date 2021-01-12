@@ -37,89 +37,57 @@ public class W01SelectTableHeader {
      */
     @SuppressWarnings("resource")
     public String selectTableHeader() {
-        ResultSet rset = null;
+        //ResultSet rset = null;
 
         // DB接続する
-        Connection conn = WISS1CommonUtil.getConnection();
+        //Connection conn = WISS1CommonUtil.getConnection();
 
-        try {
-            Scanner sc = new Scanner(System.in);
+        //try {
+        Scanner sc = new Scanner(System.in);
 
-            //3つのヘッダのどれかを選択させる
-            // 1：社員情報
-            message.outMessage("I00", W01CommonConst.TBL_NM_ONE);
-            // 2：部署コード
-            message.outMessage("I00", W01CommonConst.TBL_NM_TWO);
-            // 3：役職コード
-            message.outMessage("I00", W01CommonConst.TBL_NM_THREE);
+        //3つのヘッダのどれかを選択させる
+        // 1：社員情報
+        message.outMessage("I00", W01CommonConst.TBL_NM_ONE);
+        // 2：部署コード
+        message.outMessage("I00", W01CommonConst.TBL_NM_TWO);
+        // 3：役職コード
+        message.outMessage("I00", W01CommonConst.TBL_NM_THREE);
 
-            message.outMessage("I00", "取得したいテーブルを選択してください：");
+        message.outMessage("I00", "取得したいテーブルを選択してください：");
 
-            String code = sc.nextLine();
+        String code = sc.nextLine();
 
-            switch (code) {
+        switch (code) {
 
-            case W01CommonConst.TBL_CH_ONE:
-                // 社員情報テーブルの値を取得するメソッドを呼び出す
-                String numEmployee = getTableData(conn, W01CommonConst.TBL_NM_EMPLOYEE, rset);
-                if (W01CommonConst.TBL_CH_ONE.equals(numEmployee)) {
-                    return W01CommonConst.ERROR;
-                }
-                return W01CommonConst.SUCCESS;
+        case W01CommonConst.TBL_CH_ONE:
+            // 社員情報テーブルの値を取得するメソッドを呼び出す
+            return getTableData(W01CommonConst.TBL_NM_EMPLOYEE);
 
-            case W01CommonConst.TBL_CH_TWO:
-                // 部署コードテーブルの値を取得するメソッドを呼び出す
-                String numDivision = getTableData(conn, W01CommonConst.TBL_NM_DIVISION, rset);
-                if (W01CommonConst.TBL_CH_ONE.equals(numDivision)) {
-                    return W01CommonConst.ERROR;
-                }
-                return W01CommonConst.SUCCESS;
+        case W01CommonConst.TBL_CH_TWO:
+            // 部署コードテーブルの値を取得するメソッドを呼び出す
+            return getTableData(W01CommonConst.TBL_NM_DIVISION);
 
-            case W01CommonConst.TBL_CH_THREE:
-                //役職コードテーブルの値を取得するメソッドを呼び出す
-                String numPost = getTableData(conn, W01CommonConst.TBL_NM_POST, rset);
-                if (W01CommonConst.TBL_CH_ONE.equals(numPost)) {
-                    return W01CommonConst.ERROR;
-                }
-                return W01CommonConst.SUCCESS;
+        case W01CommonConst.TBL_CH_THREE:
+            //役職コードテーブルの値を取得するメソッドを呼び出す
+            return getTableData(W01CommonConst.TBL_NM_POST);
 
-            // 1から3以外ならバッチに戻り値1を返す
-            default:
-                message.outMessage("I04", "01から03");
+        // 1から3以外ならバッチに戻り値1を返す
+        default:
+            message.outMessage("I04", "01から03");
 
-                //table呼び出し失敗メッセージ
-                message.outMessage("E02", "TBL呼び出し");
-                return W01CommonConst.ERROR;
-            }
-
-            //DB接続失敗時に異常終了のメッセージを表示「
-        } catch (SQLException e) {
-            e.printStackTrace();
-            message.outMessage("E02", "DB接続");
+            //table呼び出し失敗メッセージ
+            message.outMessage("E02", "TBL呼び出し");
             return W01CommonConst.ERROR;
-
-        } finally {
-
-            //接続を切断する
-            if (null != rset) {
-                try {
-                    rset.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    message.outMessage("E02", "DB接続");
-                    return W01CommonConst.ERROR;
-                }
-            }
-            if (null != conn) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    message.outMessage("E02", "DB接続");
-                    return W01CommonConst.ERROR;
-                }
-            }
         }
+
+        //DB接続失敗時に異常終了のメッセージを表示
+        //} catch (SQLException e) {
+        //    e.printStackTrace();
+        //    message.outMessage("E02", "DB接続");
+        //    return W01CommonConst.ERROR;
+
+        //}
+
     }
 
     /**
@@ -130,16 +98,34 @@ public class W01SelectTableHeader {
      * @param rset（DB接続結果）
      * @return String（0:正常終了 1:異常終了）
      */
-    private static String getTableData(Connection conn, String table, ResultSet rset)
-            throws SQLException {
-        DatabaseMetaData dbmd = conn.getMetaData();
+    private static String getTableData(String table) {
+        // DB接続する
+        Connection conn = WISS1CommonUtil.getConnection();
 
-        String[] types = { W01CommonConst.PRO_DB_TABLE };
-        //渡されたカタログ、スキーマ、テーブル名のパターンで使用可能なテーブルの記述を取得します。
-        rset = dbmd.getTables(null, null, table, types);
+        DatabaseMetaData dbmd;
+        try {
+            dbmd = conn.getMetaData();
 
-        String num = exportCsv(rset, dbmd);
-        if (W01CommonConst.TBL_CH_ONE.equals(num)) {
+            String[] types = { W01CommonConst.PRO_DB_TABLE };
+            //渡されたカタログ、スキーマ、テーブル名のパターンで使用可能なテーブルの記述を取得します。
+            //ResultSet rset = dbmd.getTables(null, null, table, types);
+            ResultSet rset = dbmd.getTables(null, null, table, types);
+
+            String num = exportCsv(rset, dbmd);
+
+            if (null != conn) {
+                conn.close();
+            }
+            if (null != rset) {
+                rset.close();
+            }
+
+            if (W01CommonConst.TBL_CH_ONE.equals(num)) {
+                return W01CommonConst.ERROR;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("失敗");
             return W01CommonConst.ERROR;
         }
         return W01CommonConst.SUCCESS;
@@ -151,8 +137,9 @@ public class W01SelectTableHeader {
      * @param rs（DB接続結果）
      * @param dbmd（DBメタデータ）
      * @return String（0:正常終了 1:異常終了）
+     * @throws SQLException
      */
-    private static String exportCsv(ResultSet rs, DatabaseMetaData dbmd) {
+    private static String exportCsv(ResultSet rs, DatabaseMetaData dbmd) throws SQLException {
 
         //現在時刻の取得
         Date date = new Date();
@@ -209,7 +196,8 @@ public class W01SelectTableHeader {
                 // ファイルに書き出し閉じる
                 pWriter.close();
             }
-        } catch (IOException | SQLException e) {
+
+        } catch (IOException e) {
             e.printStackTrace();
 
             //出力失敗メッセージ
