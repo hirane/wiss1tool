@@ -25,6 +25,7 @@ import jp.co.wiss1.w01.common.W01CommonUtil;
  * @author h-shima
  * @version 1.0
  */
+
 public class W01SelectTableHeader {
 
     static W01CommonUtil message = new W01CommonUtil();
@@ -37,6 +38,17 @@ public class W01SelectTableHeader {
      */
     @SuppressWarnings("resource")
     public String selectTableHeader() {
+        Connection conn = null;
+        ResultSet rset = null;
+
+        // DBへのコネクションを作成する
+        conn = WISS1CommonUtil.getConnection();
+
+        //DB接続失敗時に異常終了のメッセージを表示
+        if (null == conn) {
+            message.outMessage("E02", "DB接続");
+            return W01CommonConst.ERROR;
+        }
 
         Scanner sc = new Scanner(System.in);
 
@@ -55,16 +67,13 @@ public class W01SelectTableHeader {
         switch (code) {
 
         case W01CommonConst.TBL_CH_ONE:
-            // 社員情報テーブルの値を取得するメソッドを呼び出す
-            return getTableData(W01CommonConst.TBL_NM_EMPLOYEE);
+            return getTableData(conn, W01CommonConst.TBL_NM_EMPLOYEE, rset);
 
         case W01CommonConst.TBL_CH_TWO:
-            // 部署コードテーブルの値を取得するメソッドを呼び出す
-            return getTableData(W01CommonConst.TBL_NM_DIVISION);
+            return getTableData(conn, W01CommonConst.TBL_NM_DIVISION, rset);
 
         case W01CommonConst.TBL_CH_THREE:
-            //役職コードテーブルの値を取得するメソッドを呼び出す
-            return getTableData(W01CommonConst.TBL_NM_POST);
+            return getTableData(conn, W01CommonConst.TBL_NM_POST, rset);
 
         // 1から3以外ならバッチに戻り値1を返す
         default:
@@ -79,54 +88,42 @@ public class W01SelectTableHeader {
 
     /**
      * Tableの情報を取得しCsvファイルを出力すむメソッドを呼び出す
-     *
-     * @param conn（DBコネクション）
-     * @param table（テーブル名）
-     * @param rset（DB接続結果）
-     * @return String（0:正常終了 1:異常終了）
+     * @param
+     * @return
      */
-    private static String getTableData(String table) {
-        // DB接続する
-        Connection conn = WISS1CommonUtil.getConnection();
-
+    private static String getTableData(Connection conn, String table, ResultSet rset) {
         DatabaseMetaData dbmd;
         try {
             dbmd = conn.getMetaData();
 
-            String[] types = { W01CommonConst.PRO_DB_TABLE };
+            String types[] = { "TABLE" };
             //渡されたカタログ、スキーマ、テーブル名のパターンで使用可能なテーブルの記述を取得します。
-            ResultSet rset = dbmd.getTables(null, null, table, types);
+            rset = dbmd.getTables(null, null, table, types);
 
             String num = exportCsv(rset, dbmd);
-
-            if (null != conn) {
-                conn.close();
-            }
-            if (null != rset) {
-                rset.close();
-            }
-
+            rset.close();
+            conn.close();
             if (W01CommonConst.TBL_CH_ONE.equals(num)) {
                 return W01CommonConst.ERROR;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("失敗");
+
+        } catch (IOException | SQLException e) {
+            message.outMessage("E02", "CSVファイル出力");
             return W01CommonConst.ERROR;
         }
+
         return W01CommonConst.SUCCESS;
     }
 
     /**
      * テーブルヘッダーをCsvファイルへ出力するメソッド
-     *
-     * @param rs（DB接続結果）
-     * @param dbmd（DBメタデータ）
-     * @return String（0:正常終了 1:異常終了）
-     * @throws SQLException
+     * @param
+     * @return
+     * @throws IOException ,SQLException
      */
-    private static String exportCsv(ResultSet rs, DatabaseMetaData dbmd) throws SQLException {
-
+    private static String exportCsv(ResultSet rs, DatabaseMetaData dbmd)
+            throws IOException, SQLException {
+        int count = 1;
         //現在時刻の取得
         Date date = new Date();
 
@@ -137,59 +134,55 @@ public class W01SelectTableHeader {
         String display = format.format(date);
 
         // 出力ファイルの作成
-        try {
+        //try {
 
-            while (rs.next()) {
-                //テーブル名を取得
-                String tableName = rs.getString(W01CommonConst.TABLE_NAME);
+        while (rs.next()) {
+            //テーブル名を取得
+            String tableName = rs.getString(W01CommonConst.TABLE_NAME);
 
-                //取得したColumnsを格納していく変数
-                StringBuffer sb = new StringBuffer();
+            //取得したColumnsを格納していく変数
+            StringBuffer sb = new StringBuffer();
 
-                //ファイル格納先
-                String filePlace = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH);
+            //ファイル格納先
+            String filePlace = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH);
 
-                //指定のファイル名を生成
-                File fInputCsv = new File(filePlace + tableName + W01CommonConst.FILE_NM_HEADER
-                        + display + W01CommonConst.CONST_EXTENSION_CSV);
+            //指定のファイル名を生成
+            File fInputCsv = new File(filePlace + tableName + W01CommonConst.FILE_NM_HEADER
+                    + display + W01CommonConst.CONST_EXTENSION_CSV);
 
-                //指定された名前のファイルに書き込むためのファイル出力ストリームを作成します。
+            //指定された名前のファイルに書き込むためのファイル出力ストリームを作成します。
+            PrintWriter pWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(fInputCsv), W01CommonConst.CONST_CHAR_CODE_UTF8)));
 
-                PrintWriter pWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(fInputCsv), W01CommonConst.CONST_CHAR_CODE_UTF8)));
+            //tableのヘッダ内容を取得
+            ResultSet rsColumns = dbmd.getColumns(null, null, tableName, W01CommonConst.CONST_ST_);
 
-                //tableのヘッダ内容を取得
-                ResultSet rsColumns =
-                        dbmd.getColumns(null, null, tableName, W01CommonConst.CONST_ST_);
+            //一件ずつループでヘッダーを取得
+            while (rsColumns.next()) {
 
-                //一件ずつループでヘッダーを取得
-                while (rsColumns.next()) {
+                //指定されたヘッダーと、区切りのカンマを格納
+                sb.append(rsColumns.getString(W01CommonConst.COLUMN_NAME));
+                sb.append(W01CommonConst.CONST_ST_COMMA);
+                count++;
 
-                    //指定されたヘッダーと、区切りのカンマを格納
-                    sb.append(rsColumns.getString(W01CommonConst.COLUMN_NAME));
-                    sb.append(W01CommonConst.CONST_ST_COMMA);
-
-                }
-
-                String columName = sb.toString();
-                //最後のカンマを除く処理
-                columName = columName.substring(0, columName.length() - 1);
-
-                //ファイルへ書き出し
-                pWriter.write(columName);
-
-                // ファイルに書き出し閉じる
-                pWriter.close();
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            String columName = sb.toString();
+            //最後のカンマを除く処理
+            columName = columName.substring(0, columName.length() - 1);
 
+            //ファイルへ書き出し
+            pWriter.write(columName);
+
+            // ファイルに書き出し閉じる
+            pWriter.close();
+        }
+        if (count == 1) {
             //出力失敗メッセージ
             message.outMessage("E02", "CSVファイル出力");
             return W01CommonConst.ERROR;
-
         }
+
         //正常終了メッセージ
         message.outMessage("I01", "ファイルへの出力");
         return W01CommonConst.SUCCESS;
