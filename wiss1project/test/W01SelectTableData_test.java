@@ -96,36 +96,27 @@ class W01SelectTableData_test {
 
     @Test
     @Order(4)
-    void 正常系_テーブル選択で1から３以外を選択したときループ_0() {
+    void 異常系_テーブル選択で1から３以外を選択したとき_1() {
 
         new MockUp<Scanner>() {
-            int count = 1;
+            //int count = 1;
 
             @Mock
             public String nextLine() {
                 //1回目入力値="4"
-                if (count == 1) {
-                    count++;
-                    return "4";
-                    //2回目入力値="1"
-                } else if (count == 2) {
-                    count++;
-                    return "1";
-                }
-                //3回目入力値="1"
-                return "1";
+                return "4";
             }
         };
 
         W01SelectTableData select = new W01SelectTableData();
         String actual = select.selectTableData(false);
-        assertEquals(W01CommonConst.SUCCESS, actual);
+        assertEquals(W01CommonConst.ERROR, actual);
 
     }
 
     @Test
     @Order(5)
-    void 正常系_実行操作で1から３以外を選択したときループ_0() {
+    void 異常系_実行操作で1から３以外を選択したとき_1() {
 
         new MockUp<Scanner>() {
             int count = 1;
@@ -136,19 +127,16 @@ class W01SelectTableData_test {
                 if (count == 1) {
                     count++;
                     return "1";
-                    //2回目入力値="4"
-                } else if (count == 2) {
-                    count++;
-                    return "4";
+
                 }
-                //3回目入力値="1"
-                return "1";
+                //2回目入力値="4"
+                return "4";
             }
         };
 
         W01SelectTableData select = new W01SelectTableData();
         String actual = select.selectTableData(false);
-        assertEquals(W01CommonConst.SUCCESS, actual);
+        assertEquals(W01CommonConst.ERROR, actual);
 
     }
 
@@ -219,7 +207,7 @@ class W01SelectTableData_test {
 
     @Test
     @Order(8)
-    void 正常系_1または2以外を選択したときループ_0() {
+    void 異常系_1または2以外を選択したとき_1() {
 
         new MockUp<Scanner>() {
             int count = 1;
@@ -230,27 +218,15 @@ class W01SelectTableData_test {
                 if (count == 1) {
                     count++;
                     return "1";
-                    //2回目入力値="3"
-                } else if (count == 2) {
-                    count++;
-                    return "3";
                 }
-                //3回目入力値="1"
-                return "1";
-            }
-        };
-
-        new MockUp<W01ConvertFileCsvToTsv>() {
-
-            @Mock
-            public String convertFileCsvToTsv(String fileName, boolean interlockingFlg) {
-                return W01CommonConst.SUCCESS;
+                //2回目入力値="3"
+                return "3";
             }
         };
 
         W01SelectTableData select = new W01SelectTableData();
         String actual = select.selectTableData(true);
-        assertEquals(W01CommonConst.SUCCESS, actual);
+        assertEquals(W01CommonConst.ERROR, actual);
 
     }
 

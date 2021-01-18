@@ -67,12 +67,15 @@ public class W01SelectTableHeader {
         switch (code) {
 
         case W01CommonConst.TBL_CH_ONE:
+            // 社員情報テーブルの値を取得するメソッドを呼び出す
             return getTableData(conn, W01CommonConst.TBL_NM_EMPLOYEE, rset);
 
         case W01CommonConst.TBL_CH_TWO:
+            // 部署コードテーブルの値を取得するメソッドを呼び出す
             return getTableData(conn, W01CommonConst.TBL_NM_DIVISION, rset);
 
         case W01CommonConst.TBL_CH_THREE:
+            //役職コードテーブルの値を取得するメソッドを呼び出す
             return getTableData(conn, W01CommonConst.TBL_NM_POST, rset);
 
         // 1から3以外ならバッチに戻り値1を返す
@@ -88,8 +91,11 @@ public class W01SelectTableHeader {
 
     /**
      * Tableの情報を取得しCsvファイルを出力すむメソッドを呼び出す
-     * @param
-     * @return
+     *
+     * @param conn（DBコネクション）
+     * @param table（テーブル名）
+     * @param rset（DB接続結果）
+     * @return String（0:正常終了 1:異常終了）
      */
     private static String getTableData(Connection conn, String table, ResultSet rset) {
         DatabaseMetaData dbmd;
@@ -117,8 +123,10 @@ public class W01SelectTableHeader {
 
     /**
      * テーブルヘッダーをCsvファイルへ出力するメソッド
-     * @param
-     * @return
+     *
+     * @param rs（DB接続結果）
+     * @param dbmd（DBメタデータ）
+     * @return String（0:正常終了 1:異常終了）
      * @throws IOException ,SQLException
      */
     private static String exportCsv(ResultSet rs, DatabaseMetaData dbmd)

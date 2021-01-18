@@ -58,7 +58,7 @@ public class W01SelectTableData {
                     && !(W01CommonConst.TBL_CH_TWO.equals(numTable))
                     && !(W01CommonConst.TBL_CH_THREE.equals(numTable))) {
                 message.outMessage("E04", "1から3");
-                continue;
+                return W01CommonConst.ERROR;
 
             }
 
@@ -79,6 +79,7 @@ public class W01SelectTableData {
                 }
 
                 try {
+
                     if (W01CommonConst.OPE_CH_ONE.equals(numData)) {
                         Class.forName(W01CommonConst.PRO_DB_DRIVER);
                         return selectData(numTable, interLockingFlg);
@@ -90,7 +91,7 @@ public class W01SelectTableData {
                         return deleteData(numTable);
                     } else {
                         message.outMessage("E04", "1から3");
-                        continue;
+                        return W01CommonConst.ERROR;
                     }
 
                 } catch (SQLException | IOException | ClassNotFoundException e) {
@@ -380,7 +381,7 @@ public class W01SelectTableData {
             // それ以外
             default:
                 message.outMessage("E04", "1または2で");
-                continue;
+                return W01CommonConst.ERROR;
             }
 
         }
@@ -399,7 +400,7 @@ public class W01SelectTableData {
         message.outMessage("I03", "CSVファイル名");
         Scanner scan = new Scanner(System.in);
         String fileName = scan.nextLine();
-
+        fileName = fileName.replaceAll("^[ |　|\\n|\\t]+|[ |　|\\n|\\t]+$", "");
         // CSVファイルの絶対パスを取得
         String filePath = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH) + fileName;
 
