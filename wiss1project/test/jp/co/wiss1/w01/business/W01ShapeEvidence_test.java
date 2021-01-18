@@ -11,7 +11,7 @@ import mockit.MockUp;
 
 class W01ShapeEvidence_test {
     /*
-//shapeEvidence
+    //shapeEvidence
     @Test
     public void 正常系_フォルダ内のtsvファイル全てを選択したとき_0() {
         new MockUp<W01ShapeEvidence>() {
@@ -138,7 +138,7 @@ class W01ShapeEvidence_test {
     }
 
 
-//evidenceOutputメソッド
+    //evidenceOutputメソッド
     @Test
     public void 異常系_1_フォルダ内のファイル1つを選択したがtsvでもcsvでないとき_1() {
         new MockUp<Scanner>() {
@@ -235,7 +235,7 @@ class W01ShapeEvidence_test {
 
 
 
-  //中身tsvファイル
+    //中身tsvファイル
     @Test
     public void 異常系_ファイルのエビデンス成型に失敗したとき_1() {
         new MockUp<Scanner>() {
@@ -259,8 +259,8 @@ class W01ShapeEvidence_test {
     }
 
 
-//TODO
-//中身sjis 落とせない
+    //TODO
+    //中身sjis 落とせない
     @Test
     public void 異常系_マクロの呼び出しに失敗したとき_1() {
         new MockUp<Scanner>() {
@@ -282,35 +282,10 @@ class W01ShapeEvidence_test {
         String actual = shapeEvidence.shapeEvidence();
         assertEquals("1", actual);
     }
-*/
 
 
-//allFileSorting
-    //fileArrayの中身はパスが入っているためif文に入らない
-    @Test
-    public void 異常系_1_フォルダ内にファイルが存在しないとき_1() {
-       new MockUp<Scanner>() {
-           int count = 1;
-           @Mock
-           //１回目入力値="1"
-           //2回目="2"
-           public String next() {
-               if (count == 1) {
-                   count++;
-                   return "1";
-               }
-                   return "2";
-               }
-
-       };
-        W01ShapeEvidence shapeEvidence = new W01ShapeEvidence();
-        //return Moc="0"allFileSorting
-        String actual = shapeEvidence.shapeEvidence();
-        assertEquals("1", actual);
-    }
 
 
-/*
     @Test
     public void 正常系_tsvファイルのエビデンス成型に成功したとき_0() {
         new MockUp<Scanner>() {
@@ -357,6 +332,28 @@ class W01ShapeEvidence_test {
          assertEquals("0", actual);
      }
 
-*/
+    */
 
+    @Test
+    public void 異常系_1_フォルダ内にファイルが存在しないとき_1() {
+        new MockUp<Scanner>() {
+            int count = 1;
+
+            @Mock
+            //１回目入力値="1"
+            //2回目="2"
+            public String next() {
+                if (count == 1) {
+                    count++;
+                    return "1";
+                }
+                return "2";
+            }
+
+        };
+        W01ShapeEvidence shapeEvidence = new W01ShapeEvidence();
+        //return Moc="0"allFileSorting
+        String actual = shapeEvidence.shapeEvidence();
+        assertEquals("0", actual);
+    }
 }

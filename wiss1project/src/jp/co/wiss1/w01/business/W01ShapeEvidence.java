@@ -61,8 +61,7 @@ public class W01ShapeEvidence {
                 default:
                     W01CommonUtil messege = new W01CommonUtil();
                     messege.outMessage("E04", "1または2");
-                    // 異常値の場合はループさせる
-                    continue;
+                    return W01CommonConst.ERROR;
                 }
 
                 // フォルダ内のすべてを対象にしない（W01CommonConst.TWO_NO）
@@ -70,7 +69,8 @@ public class W01ShapeEvidence {
                 //ファイル名を入力させる
                 message.outMessage("I03", "変換したいファイル名");
                 Scanner sc = new Scanner(System.in);
-                String fileName = sc.next();
+                String fileName = scan.nextLine();
+                fileName = fileName.replaceAll("^[ |　|\\n|\\t]+|[ |　|\\n|\\t]+$", "");
 
                 // プロパティからファイルパスを読み込む
                 String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH);
@@ -82,8 +82,7 @@ public class W01ShapeEvidence {
             default:
                 W01CommonUtil messege = new W01CommonUtil();
                 messege.outMessage("E04", "1または2");
-                // 異常値の場合はループさせる
-                continue;
+                return W01CommonConst.ERROR;
 
             }
         }
@@ -164,12 +163,6 @@ public class W01ShapeEvidence {
         // 判別した後のcsvファイル名を入れるリスト
         List<String> csvList = new ArrayList<String>(0);
 
-        // ファイルが存在しなかった場合
-        if (fileArray.equals(W01CommonConst.EVIDENCE_PATH)) {
-            message.outMessage("E03", "対象となるファイル");
-            // 異常終了
-            return W01CommonConst.ERROR;
-        }
         // ファイルの一覧を取得
         for (File f : fileArray) {
             // isFileメソッドでファイルを判別
@@ -200,7 +193,11 @@ public class W01ShapeEvidence {
                 evidenceOutput(csvFile);
             }
         }
-
+        //フォルダ内にファイルが存在しない時
+        if (tsvList.size() == W01CommonConst.NUM_ZERO
+                && csvList.size() == W01CommonConst.NUM_ZERO) {
+            message.outMessage("I00", "対象のファイルがありません。");
+        }
         // 正常終了の場合は0を返す
         return W01CommonConst.SUCCESS;
     }

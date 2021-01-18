@@ -29,8 +29,8 @@ class W01ConvertFileSelect_test {
         assertEquals("0", actual);
     }
 
-/*
-//W01ConvertFileCsvToTsvが障害のため返却値が返ってこない
+    /*
+    //W01ConvertFileCsvToTsvが障害のため返却値が返ってこない
     @Test
     public void 正常系_フォルダ内のCSVファイル全て対象にしたとき_0() {
         new MockUp<Scanner>() {
@@ -51,13 +51,13 @@ class W01ConvertFileSelect_test {
         String actual = convertFileSelect.convertFileSelect();
         assertEquals("0", actual);
     }
-*/
-
+    */
 
     @Test
     public void 異常系_フォルダ内を全て対象にし異常値を入力されたとき_1() {
         new MockUp<Scanner>() {
             int count = 1;
+
             @Mock
             //１回目入力値="1"
             //2回目="9"
@@ -77,11 +77,11 @@ class W01ConvertFileSelect_test {
         assertEquals("1", actual);
     }
 
-
     @Test
     public void 正常系_フォルダ内のファイル全てが対象で無いとき_0() {
         new MockUp<Scanner>() {
             int count = 1;
+
             @Mock
             //１回目入力値="2"
             //2回目="TSVファイル名"
@@ -101,11 +101,11 @@ class W01ConvertFileSelect_test {
         assertEquals("0", actual);
     }
 
-
     @Test
     public void 異常系_フォルダ内を全て対象の選択肢で異常値を入力されたとき_1() {
         new MockUp<Scanner>() {
             int count = 1;
+
             @Mock
             //１回目入力値="1"
             //2回目="9"
@@ -116,8 +116,6 @@ class W01ConvertFileSelect_test {
                 }
                 return "1";
 
-
-
             }
         };
         W01ConvertFileSelect convertFileSelect = new W01ConvertFileSelect();
@@ -126,12 +124,12 @@ class W01ConvertFileSelect_test {
         assertEquals("1", actual);
     }
 
-
-      //selectFile
+    //selectFile
     @Test
     public void 正常系_TSVファイルを入力したとき_0() {
         new MockUp<Scanner>() {
             int count = 1;
+
             @Mock
             //１回目入力値="2"
             //2回目="TSVファイル名"
@@ -151,9 +149,8 @@ class W01ConvertFileSelect_test {
         assertEquals("0", actual);
     }
 
-
-/*
-  //W01ConvertFileCsvToTsvが障害のため返却値が返ってこない
+    /*
+      //W01ConvertFileCsvToTsvが障害のため返却値が返ってこない
     @Test
     public void 正常系_CSVファイルを入力したとき_0() {
         new MockUp<Scanner>() {
@@ -176,13 +173,13 @@ class W01ConvertFileSelect_test {
         String actual = convertFileSelect.convertFileSelect();
         assertEquals("0", actual);
     }
-*/
-
+    */
 
     @Test
     public void 異常系_TSVCSVファイル以外のファイルを入力したとき_1() {
         new MockUp<Scanner>() {
             int count = 1;
+
             @Mock
             //１回目入力値="2"
             //2回目="TSV,CSVファイル以外のファイル"
@@ -202,8 +199,6 @@ class W01ConvertFileSelect_test {
         assertEquals("1", actual);
     }
 
-
-
     //allFileSorting
     @Test
     public void 正常系_フォルダ内一括処理TSVファイルを入力したとき_0() {
@@ -222,8 +217,8 @@ class W01ConvertFileSelect_test {
         assertEquals("0", actual);
     }
 
-/*
-  //W01ConvertFileCsvToTsvが障害のため返却値が返ってこない
+    /*
+      //W01ConvertFileCsvToTsvが障害のため返却値が返ってこない
     @Test
     public void 正常系_フォルダ内一括処理CSVファイルを入力したとき_0() {
         new MockUp<Scanner>() {
@@ -246,5 +241,5 @@ class W01ConvertFileSelect_test {
         String actual = convertFileSelect.convertFileSelect();
         assertEquals("0", actual);
     }
-*/
+    */
 }

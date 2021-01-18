@@ -64,8 +64,7 @@ public class W01ConvertFileSelect {
                     // それ以外
                     default:
                         message.outMessage("E04", W01CommonConst.SELECT_ONE_AND_TWO);
-                        // 異常値の場合はループさせる
-                        continue;
+                        return W01CommonConst.ERROR;
                     }
                 }
 
@@ -76,8 +75,7 @@ public class W01ConvertFileSelect {
             // それ以外
             default:
                 message.outMessage("E04", W01CommonConst.SELECT_ONE_AND_TWO);
-                // 異常値の場合はループさせる
-                continue;
+                return W01CommonConst.ERROR;
             }
         }
     }
@@ -93,7 +91,8 @@ public class W01ConvertFileSelect {
         //ファイル名を入力させる
         message.outMessage("I03", "変換したいファイル名");
         Scanner scan = new Scanner(System.in);
-        String fileName = scan.next();
+        String fileName = scan.nextLine();
+        fileName = fileName.replaceAll("^[ |　|\\n|\\t]+|[ |　|\\n|\\t]+$", "");
 
         //拡張子判断
         String extension = WISS1CommonUtil.judgmentExtension(fileName);

@@ -9,7 +9,7 @@ import mockit.Mock;
 import mockit.MockUp;
 
 class W01ToolMenu_test {
-/*
+    /*
     @Test
     public void 正常系_1_ファイル変換が選択されたとき_0() throws IOException {
          new MockUp<W01ConvertFileSelect>() {
@@ -57,7 +57,7 @@ class W01ToolMenu_test {
            }
        };
        W01ToolMenu.main(null);
-   }
+       }
 
 
     @Test
@@ -357,13 +357,13 @@ class W01ToolMenu_test {
             };
         W01ToolMenu.main(null);
     }
-*/
-
+    */
 
     @Test
     public void 異常系_最初に異常値が入力されたとき_1() throws IOException {
         new MockUp<Scanner>() {
             int count = 1;
+
             @Mock
             //１回目入力値="aa"
             public String next() {
@@ -373,9 +373,9 @@ class W01ToolMenu_test {
                 }
                 //2回目にScannerが呼ばれた際に”９９”を渡して処理を終わらす
                 return "99";
-            }            };
+            }
+        };
         W01ToolMenu.main(null);
     }
-
 
 }

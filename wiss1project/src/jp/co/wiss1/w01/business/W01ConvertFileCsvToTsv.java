@@ -121,8 +121,7 @@ public class W01ConvertFileCsvToTsv {
                     default:
 
                         message.outMessage("E04", W01CommonConst.SELECT_ONE_AND_TWO);
-                        // 異常値の場合はループさせる
-                        continue;
+                        return W01CommonConst.ERROR;
                     }
                 } else {
                     // 連動機能以外の場合
