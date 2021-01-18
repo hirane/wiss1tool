@@ -154,8 +154,11 @@ public class W01ConvertFileTsvToCsv {
      */
     public static String allFileTsvToCsv(List<String> tsvList) {
         for (String tsvFile : tsvList) {
-            return checkFile(tsvFile);
-
+            // 対象のファイルが異常の時はそのファイルを飛ばす
+            String returnNum = checkFile(tsvFile);
+            if (returnNum.equals(W01CommonConst.ERROR)) {
+                continue;
+            }
         }
         message.outMessage("I01", "CSVからTSVへのファイル変換");
         // 正常終了の場合は0を返す

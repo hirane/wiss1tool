@@ -55,14 +55,14 @@ public class W01ShapeEvidence {
                 // フォルダ内のtsvファイルを対象にする （W01CommonConst.ONE_TSV）
                 case W01CommonConst.OPE_CH_ONE:
                     return allFileSorting(tsvOrCsv);
-                    // フォルダ内のcsvファイルを対象にする（W01CommonConst.TWO_CSV）
+                // フォルダ内のcsvファイルを対象にする（W01CommonConst.TWO_CSV）
                 case W01CommonConst.OPE_CH_TWO:
                     return allFileSorting(tsvOrCsv);
                 default:
                     W01CommonUtil messege = new W01CommonUtil();
                     messege.outMessage("E04", "1または2");
-                    // 異常終了の場合は1を返す
-                    return W01CommonConst.ERROR;
+                    // 異常値の場合はループさせる
+                    continue;
                 }
 
                 // フォルダ内のすべてを対象にしない（W01CommonConst.TWO_NO）
@@ -82,8 +82,8 @@ public class W01ShapeEvidence {
             default:
                 W01CommonUtil messege = new W01CommonUtil();
                 messege.outMessage("E04", "1または2");
-                // 異常終了の場合は1を返す
-                return W01CommonConst.ERROR;
+                // 異常値の場合はループさせる
+                continue;
 
             }
         }
@@ -151,6 +151,7 @@ public class W01ShapeEvidence {
      * @param tsvOrCsv（ファイルの種類）
      * @return 処理結果を返却する
      */
+    @SuppressWarnings("unlikely-arg-type")
     public String allFileSorting(String tsvOrCsv) {
 
         String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH); // ログインパスワード
@@ -164,7 +165,7 @@ public class W01ShapeEvidence {
         List<String> csvList = new ArrayList<String>(0);
 
         // ファイルが存在しなかった場合
-        if (fileArray == null) {
+        if (fileArray.equals(W01CommonConst.EVIDENCE_PATH)) {
             message.outMessage("E03", "対象となるファイル");
             // 異常終了
             return W01CommonConst.ERROR;
@@ -173,11 +174,12 @@ public class W01ShapeEvidence {
         for (File f : fileArray) {
             // isFileメソッドでファイルを判別
             if (f.isFile()) {
-                message.outMessage("I00",f.toString());//ファイルを表示
+                message.outMessage("I00", f.toString());//ファイルを表示
                 String fileName = f.toString();
 
                 //拡張子判断
-                String extension = fileName.substring(fileName.lastIndexOf(W01CommonConst.CONST_ST_PERIOD));
+                String extension =
+                        fileName.substring(fileName.lastIndexOf(W01CommonConst.CONST_ST_PERIOD));
                 //TSVファイルの場合
                 if (W01CommonConst.CONST_EXTENSION_TSV.equals(extension)) {
                     tsvList.add(fileName);
@@ -197,8 +199,6 @@ public class W01ShapeEvidence {
             for (String csvFile : csvList) {
                 evidenceOutput(csvFile);
             }
-        } else {
-            return W01CommonConst.ERROR;
         }
 
         // 正常終了の場合は0を返す

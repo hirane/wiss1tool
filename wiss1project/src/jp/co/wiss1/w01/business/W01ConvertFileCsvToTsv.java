@@ -121,9 +121,12 @@ public class W01ConvertFileCsvToTsv {
                     default:
 
                         message.outMessage("E04", W01CommonConst.SELECT_ONE_AND_TWO);
-                        // 異常終了の場合は1を返す
-                        return W01CommonConst.ERROR;
+                        // 異常値の場合はループさせる
+                        continue;
                     }
+                } else {
+                    // 連動機能以外の場合
+                    return W01CommonConst.SUCCESS;
                 }
             }
 
@@ -145,7 +148,11 @@ public class W01ConvertFileCsvToTsv {
         // selectNumは連動機能と判別させる数値
         boolean interlockingFlg = false;
         for (String csvFile : csvList) {
-            return checkFile(csvFile, interlockingFlg);
+            // 対象のファイルが異常の時はそのファイルを飛ばす
+            String returnNum = checkFile(csvFile, interlockingFlg);
+            if (returnNum.equals(W01CommonConst.ERROR)) {
+                continue;
+            }
         }
         message.outMessage("I01", "CSVからTSVへのファイル変換");
         // 正常終了の場合は0を返す

@@ -64,8 +64,8 @@ public class W01ConvertFileSelect {
                     // それ以外
                     default:
                         message.outMessage("E04", W01CommonConst.SELECT_ONE_AND_TWO);
-                        // 異常終了の場合は1を返す
-                        return W01CommonConst.ERROR;
+                        // 異常値の場合はループさせる
+                        continue;
                     }
                 }
 
@@ -76,8 +76,8 @@ public class W01ConvertFileSelect {
             // それ以外
             default:
                 message.outMessage("E04", W01CommonConst.SELECT_ONE_AND_TWO);
-                // 異常終了の場合は1を返す
-                return W01CommonConst.ERROR;
+                // 異常値の場合はループさせる
+                continue;
             }
         }
     }
