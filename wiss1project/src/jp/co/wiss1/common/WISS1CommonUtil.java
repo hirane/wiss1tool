@@ -84,6 +84,12 @@ public class WISS1CommonUtil {
        */
     public static String judgmentExtension(String fileName) {
         // 拡張子判断
-        return fileName.substring(fileName.lastIndexOf(W01CommonConst.CONST_ST_PERIOD));
+        // 拡張子がついていないファイル名の場合はエラーを返す
+        if(fileName.contains(".")) {
+            return fileName.substring(fileName.lastIndexOf(W01CommonConst.CONST_ST_PERIOD));
+        } else {
+            return W01CommonConst.ERROR;
+        }
+
     }
 }
