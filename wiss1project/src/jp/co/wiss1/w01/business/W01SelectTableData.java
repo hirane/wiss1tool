@@ -413,7 +413,7 @@ public class W01SelectTableData {
         } else if (W01CommonConst.FCHECK_ERROR_EXS == W01CommonUtil.checkInputPath(filePath,
                 W01CommonConst.CONST_EXTENSION_CSV)) {
             // 該当のファイルが存在しない場合、異常終了する
-            message.outMessage("E03", "ファイル");
+            message.outMessage("E03", "フォルダまたはファイル");
             return W01CommonConst.ERROR;
         } else if (W01CommonConst.FCHECK_ERROR_EMP == W01CommonUtil.checkInputPath(filePath,
                 W01CommonConst.CONST_EXTENSION_CSV)) {
