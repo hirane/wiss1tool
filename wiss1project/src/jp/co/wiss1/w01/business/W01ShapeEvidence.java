@@ -69,7 +69,7 @@ public class W01ShapeEvidence {
                 //ファイル名を入力させる
                 message.outMessage("I03", "変換したいファイル名");
                 Scanner sc = new Scanner(System.in);
-                String fileName = scan.nextLine();
+                String fileName = sc.nextLine();
                 fileName = fileName.replaceAll("^[ |　|\\n|\\t]+|[ |　|\\n|\\t]+$", "");
 
                 // プロパティからファイルパスを読み込む
@@ -150,7 +150,6 @@ public class W01ShapeEvidence {
      * @param tsvOrCsv（ファイルの種類）
      * @return 処理結果を返却する
      */
-    @SuppressWarnings("unlikely-arg-type")
     public String allFileSorting(String tsvOrCsv) {
 
         String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH); // ログインパスワード
@@ -162,12 +161,12 @@ public class W01ShapeEvidence {
         List<String> tsvList = new ArrayList<String>(0);
         // 判別した後のcsvファイル名を入れるリスト
         List<String> csvList = new ArrayList<String>(0);
-
+        int successCount = W01CommonConst.NUM_ZERO;
         // ファイルの一覧を取得
         for (File f : fileArray) {
             // isFileメソッドでファイルを判別
             if (f.isFile()) {
-                message.outMessage("I00", f.toString());//ファイルを表示
+
                 String fileName = f.toString();
 
                 //拡張子判断
@@ -182,24 +181,34 @@ public class W01ShapeEvidence {
                 }
             }
         }
-        if (W01CommonConst.OPE_CH_ONE.equals(tsvOrCsv)) {
+        //入力値が”1”かつ、tsvファイルが0ではないとき
+        if (W01CommonConst.OPE_CH_ONE.equals(tsvOrCsv)
+                && tsvList.size() != W01CommonConst.NUM_ZERO) {
             // フォルダ内のtsvファイル分繰り返す
             for (String tsvFile : tsvList) {
+                successCount++;
+                //ファイルを表示
+                message.outMessage("I00", tsvFile.toString());
                 evidenceOutput(tsvFile);
             }
-        } else if (W01CommonConst.OPE_CH_TWO.equals(tsvOrCsv)) {
+            message.outMessage("I01",
+                    tsvList.size() + "/" + successCount + "件" + "TSVファイルのエビデンス成型");
+            //入力値が”2”かつ、ｃsvファイルが0ではないとき
+        } else if (W01CommonConst.OPE_CH_TWO.equals(tsvOrCsv)
+                && csvList.size() != W01CommonConst.NUM_ZERO) {
             // フォルダ内のcsvファイル分繰り返す
             for (String csvFile : csvList) {
+                successCount++;
+                //ファイルを表示
+                message.outMessage("I00", csvFile.toString());
                 evidenceOutput(csvFile);
             }
-        }
-        //フォルダ内にファイルが存在しない時
-        if (tsvList.size() == W01CommonConst.NUM_ZERO
-                && csvList.size() == W01CommonConst.NUM_ZERO) {
+            message.outMessage("I01",
+                    csvList.size() + "/" + successCount + "件" + "CSVファイルのエビデンス成型");
+        } else {
             message.outMessage("I00", "対象のファイルがありません。");
         }
-        // 正常終了の場合は0を返す
+
         return W01CommonConst.SUCCESS;
     }
-
 }

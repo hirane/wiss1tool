@@ -56,7 +56,7 @@ public class W01ConvertFileTsvToCsv {
             return W01CommonConst.ERROR;
             // ファイルの存在チェック
         } else if (inFile == W01CommonConst.FCHECK_ERROR_EXS) {
-            message.outMessage("I03", "正しい格納先（絶対パス）");
+            message.outMessage("E03", "フォルダまたはファイル");
             return W01CommonConst.ERROR;
             // ファイルサイズチェック
         } else if (inFile == W01CommonConst.FCHECK_ERROR_EMP) {
@@ -153,14 +153,19 @@ public class W01ConvertFileTsvToCsv {
      * @return 処理結果を返却する
      */
     public static String allFileTsvToCsv(List<String> tsvList) {
+        int successCount = W01CommonConst.NUM_ZERO;
         for (String tsvFile : tsvList) {
             // 対象のファイルが異常の時はそのファイルを飛ばす
             String returnNum = checkFile(tsvFile);
+            //対象のファイルを表示
+            message.outMessage("I00", tsvFile.toString());
             if (returnNum.equals(W01CommonConst.ERROR)) {
                 continue;
             }
+            //正常に処理した件数のカウント
+            successCount++;
         }
-        message.outMessage("I01", "CSVからTSVへのファイル変換");
+        message.outMessage("I01", tsvList.size() + "/" + successCount + "件" + "のCSVからTSVへのファイル変換");
         // 正常終了の場合は0を返す
         return W01CommonConst.SUCCESS;
 

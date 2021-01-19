@@ -136,7 +136,7 @@ public class W01ConvertFileSelect {
         for (File allFile : fileArray) {
             // isFileメソッドでファイルを判別
             if (allFile.isFile()) {
-                message.outMessage("I00", allFile.toString());//ファイルを表示
+
                 String fileName = allFile.toString();
 
                 //拡張子判断

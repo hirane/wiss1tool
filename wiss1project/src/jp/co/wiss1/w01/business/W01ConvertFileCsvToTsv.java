@@ -57,7 +57,6 @@ public class W01ConvertFileCsvToTsv {
         // CSVファイルの読み込み
         File fInputCsv = new File(csvFile);
         try {
-            BufferedReader br = new BufferedReader(new FileReader(fInputCsv));
 
             //ファイルのチェックメソッド （0：正常、1：拡張子エラー、2:ファイルなしエラー、3:ファイル0バイトエラー）
             String extension = W01CommonConst.CONST_EXTENSION_CSV;
@@ -68,13 +67,16 @@ public class W01ConvertFileCsvToTsv {
                 return W01CommonConst.ERROR;
             } else if (W01CommonUtil.checkInputPath(csvFile,
                     extension) == W01CommonConst.FCHECK_ERROR_EXS) {
-                message.outMessage("I03", "正しい格納先（絶対パス）");
+                message.outMessage("E03", "フォルダまたはファイル");
                 return W01CommonConst.ERROR;
             } else if (W01CommonUtil.checkInputPath(csvFile,
                     extension) == W01CommonConst.FCHECK_ERROR_EMP) {
                 message.outMessage("E03", "ファイル内にデータ");
                 return W01CommonConst.ERROR;
             }
+
+            BufferedReader br = new BufferedReader(new FileReader(fInputCsv));
+
             // TSVファイルを出力
             FileOutputStream newFile = new FileOutputStream(createFile);
             OutputStreamWriter osw =
@@ -146,14 +148,19 @@ public class W01ConvertFileCsvToTsv {
     public static String allFileCsvToTsv(List<String> csvList) {
         // selectNumは連動機能と判別させる数値
         boolean interlockingFlg = false;
+        int successCount = W01CommonConst.NUM_ZERO;
         for (String csvFile : csvList) {
             // 対象のファイルが異常の時はそのファイルを飛ばす
             String returnNum = checkFile(csvFile, interlockingFlg);
+            //対象のファイルを表示
+            message.outMessage("I00", csvFile.toString());
             if (returnNum.equals(W01CommonConst.ERROR)) {
                 continue;
             }
+            //正常に処理した件数のカウント
+            successCount++;
         }
-        message.outMessage("I01", "CSVからTSVへのファイル変換");
+        message.outMessage("I01", csvList.size() + "/" + successCount + "件" + "のCSVからTSVへのファイル変換");
         // 正常終了の場合は0を返す
         return W01CommonConst.SUCCESS;
 
