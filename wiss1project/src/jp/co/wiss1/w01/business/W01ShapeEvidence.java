@@ -206,6 +206,7 @@ public class W01ShapeEvidence {
             message.outMessage("I01",
                     csvList.size() + "/" + successCount + "件" + "CSVファイルのエビデンス成型");
         } else {
+            // フォルダ内にcsv、tsvファイルが存在しない時
             message.outMessage("I00", "対象のファイルがありません。");
         }
 
