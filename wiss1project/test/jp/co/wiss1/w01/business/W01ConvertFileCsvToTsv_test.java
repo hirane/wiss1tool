@@ -14,7 +14,7 @@ import mockit.MockUp;
 class W01ConvertFileCsvToTsv_test {
 
     //convertFileCsvToTsv
-    //実装はうまくいってるが、障害を改善しないと実行結果が返ってこない
+    //TODO
     @Test
     public void 正常系_CSVファイル名を入力したとき_0() {
 
@@ -22,7 +22,14 @@ class W01ConvertFileCsvToTsv_test {
         String fileName = "division_code_data_20201109175855.csv";
         //input interlockingFlg=true
         boolean interlockingFlg = true;
+        new MockUp<Scanner>() {
 
+            @Mock
+            //１回目入力値="2"
+            public String next() {
+                return "2";
+            }
+        };
         String actual = W01ConvertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
         assertEquals("0", actual);
     }
@@ -65,10 +72,15 @@ class W01ConvertFileCsvToTsv_test {
         assertEquals("1", actual);
     }
 
-    //実装はうまくいってるが、障害を改善しないと実行結果が不一致になる
+    //TODO
     @Test
     public void 正常系_EXCELファイルに出力したとき_0() {
-
+        new MockUp<W01ShapeEvidence>() {
+            @Mock
+            public String evidenceOutput(String createFile) {
+            return "0";
+            }
+       };
         //input fileName=CSVファイル名
         String fileName = "division_code_data_20201109175855.csv";
         //input interlockingFlg=true
@@ -139,17 +151,37 @@ class W01ConvertFileCsvToTsv_test {
     }
 
     //allFileCsvToTsv
-    //実装はうまくいってるが、障害を改善しないと実行結果が返ってこない
     @Test
     public void 正常系_フォルダ内一括処理のとき_0() {
 
         List<String> csvList = new ArrayList<String>(0);
         csvList.add("C:\\wiss1workspeas\\division_code_data_20201109175855.csv");
-        csvList.add("C:\\wiss1workspeas\\division_code_data_20201126184007.csv");
+        csvList.add("C:\\wiss1workspeas\\t_employee_datasheader20201118162526.csv");
         csvList.add("C:\\wiss1workspeas\\t_employee_datas_data_20201119144237.csv");
 
         String actual = W01ConvertFileCsvToTsv.allFileCsvToTsv(csvList);
         assertEquals("0", actual);
     }
+
+
+    @Test
+    public void 異常系_アクセス権限がないCSVファイル名を入力したとき_0() {
+
+        //input fileName=CSVファイル名
+        String fileName = "division_code_data_20210121074809.csv";
+        //input interlockingFlg=true
+        boolean interlockingFlg = true;
+        new MockUp<Scanner>() {
+
+            @Mock
+            //１回目入力値="2"
+            public String next() {
+                return "2";
+            }
+        };
+        String actual = W01ConvertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
+        assertEquals("0", actual);
+    }
+
 
 }

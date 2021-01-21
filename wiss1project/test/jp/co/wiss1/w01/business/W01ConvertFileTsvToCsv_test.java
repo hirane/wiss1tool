@@ -50,10 +50,11 @@ class W01ConvertFileTsvToCsv_test {
         assertEquals("1", actual);
     }
 
+    //TODO
     @Test
-    public void 異常系_TSVファイルを読み込んだとき_1() {
+    public void 異常系_中身がCSVのTSVファイルを読み込んだとき_1() {
         //input fileName=tｓｖファイル名
-        String fileName = "t_employee_datas_data_20201119144237.tsv";
+        String fileName = "t_employee_datas_data_20201118191647.tsv";
 
         String actual = W01ConvertFileTsvToCsv.convertFileTsvToCsv(fileName);
         assertEquals("1", actual);
@@ -115,11 +116,32 @@ class W01ConvertFileTsvToCsv_test {
     public void 正常系_フォルダ内一括処理でTSVファイルを読み込んだとき_0() {
         List<String> tsvList = new ArrayList<String>(0);
         tsvList.add("C:\\wiss1workspeas\\division_code_data_20201109175855.tsv");
-        tsvList.add("C:\\wiss1workspeas\\division_code_data_20201118162243.tsv");
-        tsvList.add("C:\\wiss1workspeas\\division_code_data_20201126184007.tsv");
+        tsvList.add("C:\\wiss1workspeas\\t_employee_datas_data_20201118191647.tsv");
+        tsvList.add("C:\\wiss1workspeas\\t_employee_datasheader20201118162526.tsv");
 
         String actual = W01ConvertFileTsvToCsv.allFileTsvToCsv(tsvList);
         assertEquals("0", actual);
+    }
+
+    //ファイルの権限をいじる
+    @Test
+    public void 異常系_readFileメソッドでcatchに入る処理_1() {
+        //アクセス権のないファイルを指定した場合
+        String fileName = "yomitoriNG.tsv";
+
+        String actual = W01ConvertFileTsvToCsv.convertFileTsvToCsv(fileName);
+        assertEquals("1", actual);
+    }
+
+
+    //ファイルの権限をいじる
+    @Test
+    public void 異常系_createCsvメソッドでcatchに入る処理_1() {
+        //書き込み先のcsvファイルが既に存在し、かつ変更が許可されていないファイルである場合
+        String fileName = "writeNG.tsv";
+
+        String actual = W01ConvertFileTsvToCsv.convertFileTsvToCsv(fileName);
+        assertEquals("1", actual);
     }
 
 }

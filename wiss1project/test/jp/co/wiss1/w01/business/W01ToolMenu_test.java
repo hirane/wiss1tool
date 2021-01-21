@@ -9,7 +9,7 @@ import mockit.Mock;
 import mockit.MockUp;
 
 class W01ToolMenu_test {
-    /*
+
     @Test
     public void 正常系_1_ファイル変換が選択されたとき_0() throws IOException {
          new MockUp<W01ConvertFileSelect>() {
@@ -357,7 +357,7 @@ class W01ToolMenu_test {
             };
         W01ToolMenu.main(null);
     }
-    */
+
 
     @Test
     public void 異常系_最初に異常値が入力されたとき_1() throws IOException {
