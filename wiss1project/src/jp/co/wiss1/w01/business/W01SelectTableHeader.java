@@ -181,7 +181,7 @@ public class W01SelectTableHeader {
 
             //ファイルへ書き出し
             pWriter.write(columName);
-
+            pWriter.println();
             // ファイルに書き出し閉じる
             pWriter.close();
         }

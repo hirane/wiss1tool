@@ -87,16 +87,14 @@ public class W01ConvertFileCsvToTsv {
             String lineBefore;
             // 1行ずつCSVファイルを読み込む
             while ((lineBefore = br.readLine()) != null) {
-
                 // カンマ区切りからタブ区切りへ
                 String lineAfter = lineBefore.replace(W01CommonConst.CONST_ST_COMMA,
                         W01CommonConst.CONST_ST_TAB);
 
                 // タブ区切りにしたものを書き込み
-                pOutputTsv.print(lineAfter);
-                pOutputTsv.println(); // 改行
-
+                pOutputTsv.println(lineAfter);
             }
+
             pOutputTsv.close();
             br.close();
 
@@ -119,7 +117,7 @@ public class W01ConvertFileCsvToTsv {
                     case W01CommonConst.OPE_CH_TWO:
                         return W01CommonConst.SUCCESS;
 
-                    // それ以外
+                        // それ以外
                     default:
 
                         message.outMessage("E04", W01CommonConst.SELECT_ONE_AND_TWO);

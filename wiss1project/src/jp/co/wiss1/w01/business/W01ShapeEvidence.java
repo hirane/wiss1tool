@@ -55,12 +55,12 @@ public class W01ShapeEvidence {
                 // フォルダ内のtsvファイルを対象にする （W01CommonConst.ONE_TSV）
                 case W01CommonConst.OPE_CH_ONE:
                     return allFileSorting(tsvOrCsv);
-                // フォルダ内のcsvファイルを対象にする（W01CommonConst.TWO_CSV）
+                    // フォルダ内のcsvファイルを対象にする（W01CommonConst.TWO_CSV）
                 case W01CommonConst.OPE_CH_TWO:
                     return allFileSorting(tsvOrCsv);
                 default:
                     W01CommonUtil messege = new W01CommonUtil();
-                    messege.outMessage("E04", "1または2");
+                    messege.outMessage("E04", W01CommonConst.SELECT_ONE_AND_TWO);
                     return W01CommonConst.ERROR;
                 }
 
@@ -81,7 +81,7 @@ public class W01ShapeEvidence {
                 return evidenceOutput(fileNamePath);
             default:
                 W01CommonUtil messege = new W01CommonUtil();
-                messege.outMessage("E04", "1または2");
+                messege.outMessage("E04", W01CommonConst.SELECT_ONE_AND_TWO);
                 return W01CommonConst.ERROR;
 
             }
@@ -94,20 +94,19 @@ public class W01ShapeEvidence {
      * @return 処理結果を返却する
      */
     public static String evidenceOutput(String filePath) {
-
+        //拡張子がtsvもしくはcsvであるか確認
+        String extension = WISS1CommonUtil.judgmentExtension(filePath);
         //インプットファイルのチェック
-        int result = W01CommonUtil.checkInputPath(filePath, W01CommonConst.CONST_EXTENSION_CSV);
+        int result = W01CommonUtil.checkInputPath(filePath, extension);
         // 異なる拡張子を入力された場合
         if (result == W01CommonConst.FCHECK_ERROR_EXT) {
-            result = W01CommonUtil.checkInputPath(filePath, W01CommonConst.CONST_EXTENSION_TSV);
-            if (result == W01CommonConst.FCHECK_ERROR_EXT) {
-                message.outMessage("E04", "csvファイルもしくはtsvファイルの格納先（絶対パス）");
-                //異常終了
-                return W01CommonConst.ERROR;
-            }
+            message.outMessage("E04", "csvファイルもしくはtsvファイルの格納先（絶対パス）");
+            //異常終了
+            return W01CommonConst.ERROR;
+
             // ファイルが存在しない場合
         } else if (result == W01CommonConst.FCHECK_ERROR_EXS) {
-            message.outMessage("E03", "ファイル");
+            message.outMessage("E03", "フォルダまたはファイル");
             //異常終了
             return W01CommonConst.ERROR;
 
@@ -116,7 +115,6 @@ public class W01ShapeEvidence {
             message.outMessage("E03", "ファイル内にデータ");
             //異常終了
             return W01CommonConst.ERROR;
-
         }
 
         //ファイル名をパラメータとしてマクロに渡す
@@ -124,7 +122,8 @@ public class W01ShapeEvidence {
             // 処理を走らせる 実行する為のメソッド
             Runtime rt = Runtime.getRuntime();
             // マクロの実行
-            Process process = rt.exec(W01CommonConst.COMMAND + " " + filePath);
+            // ファイル名に半角スペースを含む場合の対策で""で囲む
+            Process process = rt.exec(W01CommonConst.COMMAND + " " + "\"" + filePath + "\"");
             // waitFor 処理が終わったら0を返す 1だったら異常終了
             int ret = process.waitFor();
             if (ret == W01CommonConst.NUM_ZERO) {
@@ -155,13 +154,18 @@ public class W01ShapeEvidence {
         String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH); // ログインパスワード
 
         File file1 = new File(path);
+        // 指定されたパスのフォルダが存在しなければエラーを返す
+        if(!file1.exists()) {
+            message.outMessage("E03", "対象フォルダ");
+            return W01CommonConst.ERROR;
+        }
         // ファイルオブジェクトを配列で取得
         File[] fileArray = file1.listFiles();
         // 判別した後のtsvファイル名を入れるリスト
         List<String> tsvList = new ArrayList<String>(0);
         // 判別した後のcsvファイル名を入れるリスト
         List<String> csvList = new ArrayList<String>(0);
-        int successCount = W01CommonConst.NUM_ZERO;
+        //        int successCount = W01CommonConst.NUM_ZERO;
         // ファイルの一覧を取得
         for (File f : fileArray) {
             // isFileメソッドでファイルを判別
@@ -182,31 +186,37 @@ public class W01ShapeEvidence {
             }
         }
         //入力値が”1”かつ、tsvファイルが0ではないとき
-        if (W01CommonConst.OPE_CH_ONE.equals(tsvOrCsv)
-                && tsvList.size() != W01CommonConst.NUM_ZERO) {
+        if (W01CommonConst.OPE_CH_ONE.equals(tsvOrCsv) && tsvList.size() != W01CommonConst.NUM_ZERO) {
+            int successCount = 0;
             // フォルダ内のtsvファイル分繰り返す
             for (String tsvFile : tsvList) {
-                successCount++;
-                //ファイルを表示
-                message.outMessage("I00", tsvFile.toString());
-                evidenceOutput(tsvFile);
+                // 参照元データのファイル名出力
+                //message.outMessage("I00", tsvFile.toString());
+                message.outMessage("I00", tsvFile.replace("\\", "\\\\"));
+                // 処理が正常に終了したか
+                String isSuccess = evidenceOutput(tsvFile);
+                // 成功した場合には成功件数にカウント
+                if(isSuccess.equals(W01CommonConst.SUCCESS)) {
+                    successCount++;
+                }
             }
-            message.outMessage("I01",
-                    tsvList.size() + "/" + successCount + "件" + "TSVファイルのエビデンス成型");
-            //入力値が”2”かつ、ｃsvファイルが0ではないとき
-        } else if (W01CommonConst.OPE_CH_TWO.equals(tsvOrCsv)
-                && csvList.size() != W01CommonConst.NUM_ZERO) {
+            message.outMessage("I01", successCount + "/" + tsvList.size() + "件TSVファイルのエビデンス成型");
+        } else if (W01CommonConst.OPE_CH_TWO.equals(tsvOrCsv) && csvList.size() != W01CommonConst.NUM_ZERO) {
+            int successCount = 0;
             // フォルダ内のcsvファイル分繰り返す
             for (String csvFile : csvList) {
-                successCount++;
-                //ファイルを表示
-                message.outMessage("I00", csvFile.toString());
-                evidenceOutput(csvFile);
+                // 参照元データのファイル名出力
+                //message.outMessage("I00", csvFile.toString());
+                message.outMessage("I00", csvFile.replace("\\", "\\\\"));
+                // 処理が正常に終了したか
+                String isSuccess = evidenceOutput(csvFile);
+                // 成功した場合には成功件数にカウント
+                if(isSuccess.equals(W01CommonConst.SUCCESS)) {
+                    successCount++;
+                }
             }
-            message.outMessage("I01",
-                    csvList.size() + "/" + successCount + "件" + "CSVファイルのエビデンス成型");
+            message.outMessage("I01", successCount + "/" + csvList.size() + "件CSVファイルのエビデンス成型");
         } else {
-            // フォルダ内にcsv、tsvファイルが存在しない時
             message.outMessage("I00", "対象のファイルがありません。");
         }
 

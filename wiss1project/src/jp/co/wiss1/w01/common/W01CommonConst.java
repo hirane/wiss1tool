@@ -292,6 +292,6 @@ public class W01CommonConst {
     /**
      * 選択肢（1～2）
      */
-    public static final String SELECT_ONE_AND_TWO = "1または2で";
+    public static final String SELECT_ONE_AND_TWO = "1または2";
 
 }

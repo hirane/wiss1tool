@@ -310,7 +310,6 @@ public class W01SelectTableData {
 
                     }
                 }
-                printWriter.println();
                 // カラム数分繰り返す
                 int j = 0;
                 for (String clmn : clmnAry) {
@@ -324,8 +323,8 @@ public class W01SelectTableData {
                         printWriter.print(W01CommonConst.CONST_ST_COMMA);
                     }
                 }
+                printWriter.println();
             }
-
             printWriter.close();
 
             if (interLockingFlg) {
