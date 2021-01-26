@@ -15,6 +15,7 @@ class W01ConvertFileCsvToTsv_test {
 
     //convertFileCsvToTsv
     //TODO
+    @SuppressWarnings("static-access")
     @Test
     public void 正常系_CSVファイル名を入力したとき_0() {
 
@@ -30,11 +31,13 @@ class W01ConvertFileCsvToTsv_test {
                 return "2";
             }
         };
-        String actual = W01ConvertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
+        W01ConvertFileCsvToTsv convertFileCsvToTsv = new W01ConvertFileCsvToTsv();
+        String actual = convertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
         assertEquals("0", actual);
     }
 
     //checkFile
+    @SuppressWarnings("static-access")
     @Test
     public void 異常系_ファイルチェック異常拡張子エラー_1() {
 
@@ -43,10 +46,12 @@ class W01ConvertFileCsvToTsv_test {
         //input interlockingFlg=true
         boolean interlockingFlg = true;
 
-        String actual = W01ConvertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
+        W01ConvertFileCsvToTsv convertFileCsvToTsv = new W01ConvertFileCsvToTsv();
+        String actual = convertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
         assertEquals("1", actual);
     }
 
+    @SuppressWarnings("static-access")
     @Test
     //絶対にキャッチのほうに入る
     public void 異常系_ファイルチェック異常ファイルなしエラー_1() {
@@ -56,10 +61,12 @@ class W01ConvertFileCsvToTsv_test {
         //input interlockingFlg=true
         boolean interlockingFlg = true;
 
-        String actual = W01ConvertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
+        W01ConvertFileCsvToTsv convertFileCsvToTsv = new W01ConvertFileCsvToTsv();
+        String actual = convertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
         assertEquals("1", actual);
     }
 
+    @SuppressWarnings("static-access")
     @Test
     public void 異常系_ファイルチェック異常ファイル0バイトエラー_1() {
 
@@ -68,11 +75,13 @@ class W01ConvertFileCsvToTsv_test {
         //input interlockingFlg=true
         boolean interlockingFlg = true;
 
-        String actual = W01ConvertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
+        W01ConvertFileCsvToTsv convertFileCsvToTsv = new W01ConvertFileCsvToTsv();
+        String actual = convertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
         assertEquals("1", actual);
     }
 
     //TODO
+    @SuppressWarnings("static-access")
     @Test
     public void 正常系_EXCELファイルに出力したとき_0() {
         new MockUp<W01ShapeEvidence>() {
@@ -94,10 +103,12 @@ class W01ConvertFileCsvToTsv_test {
             }
         };
 
-        String actual = W01ConvertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
+        W01ConvertFileCsvToTsv convertFileCsvToTsv = new W01ConvertFileCsvToTsv();
+        String actual = convertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
         assertEquals("0", actual);
     }
 
+    @SuppressWarnings("static-access")
     @Test
     public void 正常系_EXCELファイルに出力しないとき_0() {
 
@@ -114,10 +125,12 @@ class W01ConvertFileCsvToTsv_test {
             }
         };
 
-        String actual = W01ConvertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
+        W01ConvertFileCsvToTsv convertFileCsvToTsv = new W01ConvertFileCsvToTsv();
+        String actual = convertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
         assertEquals("0", actual);
     }
 
+    @SuppressWarnings("static-access")
     @Test
     public void 異常系_EXCELファイルに出力しますかで異常値を入力したとき_1() {
 
@@ -134,10 +147,12 @@ class W01ConvertFileCsvToTsv_test {
             }
         };
 
-        String actual = W01ConvertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
+        W01ConvertFileCsvToTsv convertFileCsvToTsv = new W01ConvertFileCsvToTsv();
+        String actual = convertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
         assertEquals("1", actual);
     }
 
+    @SuppressWarnings("static-access")
     @Test
     public void 異常系_異常系_CSVファイルの読み込みに失敗したとき_1() {
 
@@ -146,11 +161,13 @@ class W01ConvertFileCsvToTsv_test {
         //input interlockingFlg=true
         boolean interlockingFlg = true;
 
-        String actual = W01ConvertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
+        W01ConvertFileCsvToTsv convertFileCsvToTsv = new W01ConvertFileCsvToTsv();
+        String actual = convertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
         assertEquals("1", actual);
     }
 
     //allFileCsvToTsv
+    @SuppressWarnings("static-access")
     @Test
     public void 正常系_フォルダ内一括処理のとき_0() {
 
@@ -159,11 +176,13 @@ class W01ConvertFileCsvToTsv_test {
         csvList.add("C:\\wiss1workspeas\\t_employee_datasheader20201118162526.csv");
         csvList.add("C:\\wiss1workspeas\\t_employee_datas_data_20201119144237.csv");
 
-        String actual = W01ConvertFileCsvToTsv.allFileCsvToTsv(csvList);
+        W01ConvertFileCsvToTsv convertFileCsvToTsv = new W01ConvertFileCsvToTsv();
+        String actual = convertFileCsvToTsv.allFileCsvToTsv(csvList);
         assertEquals("0", actual);
     }
 
 
+    @SuppressWarnings("static-access")
     @Test
     public void 異常系_アクセス権限がないCSVファイル名を入力したとき_0() {
 
@@ -179,8 +198,9 @@ class W01ConvertFileCsvToTsv_test {
                 return "2";
             }
         };
-        String actual = W01ConvertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
-        assertEquals("0", actual);
+        W01ConvertFileCsvToTsv convertFileCsvToTsv = new W01ConvertFileCsvToTsv();
+        String actual = convertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
+        assertEquals("1", actual);
     }
 
 

@@ -2,10 +2,12 @@ package jp.co.wiss1.w01.business;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.util.Scanner;
 
 import org.junit.jupiter.api.Test;
 
+import jp.co.wiss1.common.WISS1CommonUtil;
 import mockit.Mock;
 import mockit.MockUp;
 
@@ -14,6 +16,13 @@ class W01ShapeEvidence_test {
     //shapeEvidence
     @Test
     public void 正常系_フォルダ内のtsvファイル全てを選択したとき_0() {
+        File aftermolding = new File("C:/wiss1workspeas/aftermolding");
+        File[] files = aftermolding.listFiles();
+        for (int i = 0; i < files.length; i++) {
+          if (files[i].exists() && files[i].isFile()) {
+              files[i].delete();
+          }
+        }
         new MockUp<W01ShapeEvidence>() {
             @Mock
             public String allFileSorting(String tsvOrCsv) {
@@ -37,6 +46,13 @@ class W01ShapeEvidence_test {
 
     @Test
     public void 正常系_フォルダ内のcsvファイル全てを選択したとき_0() {
+        File aftermolding = new File("C:/wiss1workspeas/aftermolding");
+        File[] files = aftermolding.listFiles();
+        for (int i = 0; i < files.length; i++) {
+          if (files[i].exists() && files[i].isFile()) {
+              files[i].delete();
+          }
+        }
         new MockUp<W01ShapeEvidence>() {
             @Mock
             public String allFileSorting(String tsvOrCsv) {
@@ -88,7 +104,13 @@ class W01ShapeEvidence_test {
 
     @Test
     public void 正常系_フォルダ内のtsvファイルを１つ選択したとき_0() {
-
+        File aftermolding = new File("C:/wiss1workspeas/aftermolding");
+        File[] files = aftermolding.listFiles();
+        for (int i = 0; i < files.length; i++) {
+          if (files[i].exists() && files[i].isFile()) {
+              files[i].delete();
+          }
+        }
         new MockUp<Scanner>() {
             int count = 1;
 
@@ -366,13 +388,20 @@ class W01ShapeEvidence_test {
     */
 
     @Test
-    public void 正常系_tsvファイルのエビデンス成型に成功したとき_0() {
+    public void 正常系_全てのtsvファイルのエビデンス成型に成功したとき_0() {
+        File aftermolding = new File("C:/wiss1workspeas/aftermolding");
+        File[] files = aftermolding.listFiles();
+        for (int i = 0; i < files.length; i++) {
+          if (files[i].exists() && files[i].isFile()) {
+              files[i].delete();
+          }
+        }
         new MockUp<Scanner>() {
             int count = 1;
 
             @Mock
             //１回目入力値="1"
-            //2回目="2"
+            //2回目="1"
             public String next() {
                 if (count == 1) {
                     count++;
@@ -388,11 +417,9 @@ class W01ShapeEvidence_test {
         assertEquals("0", actual);
     }
 
-
-  //正常パターンは作成ファイルが被ってしまうため同時に実行できない
-    /*
+/*
     @Test
-    public void 正常系_csvファイルのエビデンス成型に成功したとき_0() {
+    public void 正常系_全てのcsvファイルのエビデンス成型に成功したとき_0() {
         new MockUp<Scanner>() {
             int count = 1;
 
@@ -415,6 +442,40 @@ class W01ShapeEvidence_test {
     }
 */
 
+
+  //正常パターンは作成ファイルが被ってしまうため同時に実行できない
+
+    @Test
+    public void 正常系_csvファイルのエビデンス成型に成功したとき_0() {
+        File aftermolding = new File("C:/wiss1workspeas/aftermolding");
+        File[] files = aftermolding.listFiles();
+        for (int i = 0; i < files.length; i++) {
+          if (files[i].exists() && files[i].isFile()) {
+              files[i].delete();
+          }
+        }
+        new MockUp<Scanner>() {
+            int count = 1;
+
+            @Mock
+            //１回目入力値="1"
+            //2回目="2"
+            public String next() {
+                if (count == 1) {
+                    count++;
+                    return "1";
+                }
+                return "2";
+            }
+
+        };
+        W01ShapeEvidence shapeEvidence = new W01ShapeEvidence();
+        //return Moc="0"allFileSorting
+        String actual = shapeEvidence.shapeEvidence();
+        assertEquals("0", actual);
+    }
+
+
 // フォルダ内にcsvtsvファイルが存在しない要にする
     @Test
     public void 異常系_フォルダ内にcsvtsvファイルが存在しないとき_0() {
@@ -426,6 +487,14 @@ class W01ShapeEvidence_test {
             public String next() {
                 return "1";
             }
+        };
+
+        new MockUp<WISS1CommonUtil>() {
+            @Mock
+            public String getProperty(String key) {
+                return "C:\\wiss1workspeas_空\\";
+            }
+
         };
         W01ShapeEvidence shapeEvidence = new W01ShapeEvidence();
         //return Moc="0"allFileSorting
