@@ -1,3 +1,4 @@
+package jp.co.wiss1.w01.business;
 import static org.junit.Assert.*;
 
 import java.util.Scanner;
@@ -8,9 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import jp.co.wiss1.common.WISS1CommonUtil;
-import jp.co.wiss1.w01.business.W01ConvertFileCsvToTsv;
-import jp.co.wiss1.w01.business.W01SelectTableData;
-import jp.co.wiss1.w01.business.W01ShapeEvidence;
 import jp.co.wiss1.w01.common.W01CommonConst;
 import mockit.Mock;
 import mockit.MockUp;

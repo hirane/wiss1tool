@@ -97,13 +97,12 @@ public class W01ToolMenu {
                 W01ShapeEvidence w01ShapeEvidence = new W01ShapeEvidence();
                 result = w01ShapeEvidence.shapeEvidence();
             } else if ("9".equals(str)) {
-                // テーブルデータ取得
+             // 連動機能
                 W01SelectTableData w01SelectTableData = new W01SelectTableData();
                 result = w01SelectTableData.selectTableData(true);
             } else if ("99".equals(str)) {
                 // バッチ終了
-                System.exit(0);
-                // 連動機能
+                break;
             } else {
                 // 入力値不正
                 message.outMessage("I03", "該当する番号");

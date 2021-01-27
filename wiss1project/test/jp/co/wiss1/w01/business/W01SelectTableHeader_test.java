@@ -1,3 +1,4 @@
+package jp.co.wiss1.w01.business;
 import static org.junit.Assert.*;
 
 import java.sql.Connection;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import jp.co.wiss1.common.WISS1CommonUtil;
-import jp.co.wiss1.w01.business.W01SelectTableHeader;
 import jp.co.wiss1.w01.common.W01CommonConst;
 import mockit.Mock;
 import mockit.MockUp;
