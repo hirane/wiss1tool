@@ -205,47 +205,39 @@ public class W01ShapeEvidence {
         if (W01CommonConst.OPE_CH_ONE.equals(tsvOrCsv) && tsvList.size() != W01CommonConst.NUM_ZERO) {
             // 変換成功数のカウント
             int successCount = 0;
-            // 処理が成功したかどうか
-            String isSuccess = "";
             // フォルダ内のtsvファイル分繰り返す
             for (String tsvFile : tsvList) {
                 // 参照元データのファイル名出力
                 //message.outMessage("I00", tsvFile.toString());
                 message.outMessage("I00", tsvFile.replace("\\", "\\\\"));
                 // 処理が正常に終了したか
-                isSuccess = evidenceOutput(tsvFile);
+                String isSuccess = evidenceOutput(tsvFile);
                 // 成功した場合には成功件数にカウント
                 if(isSuccess.equals(W01CommonConst.SUCCESS)) {
                     successCount++;
+                } else if(isSuccess.equals(W01CommonConst.NOT_EXIST_AFTERMOLDING_ERROR)) {
+                    return W01CommonConst.ERROR;
                 }
             }
-            if(isSuccess.equals(W01CommonConst.NOT_EXIST_AFTERMOLDING_ERROR)) {
-                return W01CommonConst.ERROR;
-            } else {
-                message.outMessage("I01", successCount + "/" + tsvList.size() + "件TSVファイルのエビデンス成型");
-            }
+            message.outMessage("I01", successCount + "/" + tsvList.size() + "件TSVファイルのエビデンス成型");
         } else if (W01CommonConst.OPE_CH_TWO.equals(tsvOrCsv) && csvList.size() != W01CommonConst.NUM_ZERO) {
             // 変換成功数のカウント
             int successCount = 0;
-            // 処理が成功したかどうか
-            String isSuccess = "";
             // フォルダ内のcsvファイル分繰り返す
             for (String csvFile : csvList) {
                 // 参照元データのファイル名出力
                 //message.outMessage("I00", csvFile.toString());
                 message.outMessage("I00", csvFile.replace("\\", "\\\\"));
                 // 処理が正常に終了したか
-                isSuccess = evidenceOutput(csvFile);
+                String isSuccess = evidenceOutput(csvFile);
                 // 成功した場合には成功件数にカウント
                 if(isSuccess.equals(W01CommonConst.SUCCESS)) {
                     successCount++;
+                } else if(isSuccess.equals(W01CommonConst.NOT_EXIST_AFTERMOLDING_ERROR)) {
+                    return W01CommonConst.ERROR;
                 }
             }
-            if(isSuccess.equals(W01CommonConst.NOT_EXIST_AFTERMOLDING_ERROR)) {
-                return W01CommonConst.ERROR;
-            } else {
-                message.outMessage("I01", successCount + "/" + csvList.size() + "件CSVファイルのエビデンス成型");
-            }
+            message.outMessage("I01", successCount + "/" + csvList.size() + "件CSVファイルのエビデンス成型");
         } else {
             message.outMessage("I00", "対象のファイルがありません。");
         }
