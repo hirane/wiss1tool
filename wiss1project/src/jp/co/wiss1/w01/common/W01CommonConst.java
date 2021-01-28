@@ -294,4 +294,10 @@ public class W01CommonConst {
      */
     public static final String SELECT_ONE_AND_TWO = "1または2";
 
+    /**
+     * 戻り値（aftermoldingフォルダが存在せずに異常終了した場合）
+     */
+    public static final String NOT_EXIST_AFTERMOLDING_ERROR = "2";
+
+
 }
