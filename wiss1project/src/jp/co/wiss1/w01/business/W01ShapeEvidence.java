@@ -101,6 +101,13 @@ public class W01ShapeEvidence {
     public static String evidenceOutput(String filePath) {
         //拡張子がtsvもしくはcsvであるか確認
         String extension = WISS1CommonUtil.judgmentExtension(filePath);
+        if(W01CommonConst.CONST_EXTENSION_TSV.equals(extension)) {
+            extension = W01CommonConst.CONST_EXTENSION_TSV;
+        } else if(W01CommonConst.CONST_EXTENSION_CSV.equals(extension)) {
+            extension = W01CommonConst.CONST_EXTENSION_CSV;
+        } else {
+            extension = W01CommonConst.ERROR;
+        }
         //インプットファイルのチェック
         int result = W01CommonUtil.checkInputPath(filePath, extension);
         // 異なる拡張子を入力された場合
