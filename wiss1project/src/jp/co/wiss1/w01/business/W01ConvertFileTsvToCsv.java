@@ -155,17 +155,17 @@ public class W01ConvertFileTsvToCsv {
     public static String allFileTsvToCsv(List<String> tsvList) {
         int successCount = W01CommonConst.NUM_ZERO;
         for (String tsvFile : tsvList) {
+            //対象のファイルを表示
+            message.outMessage("I00", tsvFile.replace("\\", "\\\\"));
             // 対象のファイルが異常の時はそのファイルを飛ばす
             String returnNum = checkFile(tsvFile);
-            //対象のファイルを表示
-            message.outMessage("I00", tsvFile.toString());
             if (returnNum.equals(W01CommonConst.ERROR)) {
                 continue;
             }
             //正常に処理した件数のカウント
             successCount++;
         }
-        message.outMessage("I01", tsvList.size() + "/" + successCount + "件" + "のCSVからTSVへのファイル変換");
+        message.outMessage("I01", successCount + "/" + tsvList.size() + "件のCSVからTSVへのファイル変換");
         // 正常終了の場合は0を返す
         return W01CommonConst.SUCCESS;
 

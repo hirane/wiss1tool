@@ -126,6 +126,11 @@ public class W01ConvertFileSelect {
         String path = WISS1CommonUtil.getProperty(W01CommonConst.PRO_OUT_PATH); // ログインパスワード
 
         File file = new File(path);
+        // 指定されたパスのフォルダが存在しなければエラーを返す
+        if(!file.exists()) {
+            message.outMessage("E03", "対象フォルダ");
+            return W01CommonConst.ERROR;
+        }
         // ファイルオブジェクトを配列で取得
         File[] fileArray = file.listFiles();
         // 判別した後のtsvファイル名を入れるリスト

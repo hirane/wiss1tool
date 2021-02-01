@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -76,25 +77,33 @@ public class W01ConvertFileCsvToTsv {
             }
 
             BufferedReader br = new BufferedReader(new FileReader(fInputCsv));
-
+            // ファイル書き換え
+            String lineBefore = null;
+            String lineAfter = null;
+            // ファイル内容を格納するリスト
+            List<String> contentsList = new ArrayList<String>(0);
+            // 1行ずつCSVファイルを読み込む
+            while ((lineBefore = br.readLine()) != null) {
+                if (lineBefore.contains(W01CommonConst.CONST_ST_TAB)) {
+                    br.close();
+                    message.outMessage("I03", "コンマ区切りとなっているCSVファイル");
+                    return W01CommonConst.ERROR;
+                }
+                // カンマ区切りからタブ区切りへ
+                lineAfter = lineBefore.replace(W01CommonConst.CONST_ST_COMMA,
+                        W01CommonConst.CONST_ST_TAB);
+                contentsList.add(lineAfter);
+            }
             // TSVファイルを出力
             FileOutputStream newFile = new FileOutputStream(createFile);
             OutputStreamWriter osw =
                     new OutputStreamWriter(newFile, W01CommonConst.CONST_CHAR_CODE_UTF8);
             PrintWriter pOutputTsv = new PrintWriter(new BufferedWriter(osw));
 
-            // ファイル書き換え
-            String lineBefore;
-            // 1行ずつCSVファイルを読み込む
-            while ((lineBefore = br.readLine()) != null) {
-                // カンマ区切りからタブ区切りへ
-                String lineAfter = lineBefore.replace(W01CommonConst.CONST_ST_COMMA,
-                        W01CommonConst.CONST_ST_TAB);
-
-                // タブ区切りにしたものを書き込み
-                pOutputTsv.println(lineAfter);
+            // タブ区切りにしたものを書き込み
+            for(String line: contentsList) {
+                pOutputTsv.println(line);
             }
-
             pOutputTsv.close();
             br.close();
 
@@ -148,17 +157,17 @@ public class W01ConvertFileCsvToTsv {
         boolean interlockingFlg = false;
         int successCount = W01CommonConst.NUM_ZERO;
         for (String csvFile : csvList) {
+            //対象のファイルを表示
+            message.outMessage("I00", csvFile.replace("\\", "\\\\"));
             // 対象のファイルが異常の時はそのファイルを飛ばす
             String returnNum = checkFile(csvFile, interlockingFlg);
-            //対象のファイルを表示
-            message.outMessage("I00", csvFile.toString());
             if (returnNum.equals(W01CommonConst.ERROR)) {
                 continue;
             }
             //正常に処理した件数のカウント
             successCount++;
         }
-        message.outMessage("I01", csvList.size() + "/" + successCount + "件" + "のCSVからTSVへのファイル変換");
+        message.outMessage("I01", successCount + "/" + csvList.size() + "件のCSVからTSVへのファイル変換");
         // 正常終了の場合は0を返す
         return W01CommonConst.SUCCESS;
 
