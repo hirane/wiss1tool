@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import org.junit.jupiter.api.Test;
 
+import jp.co.wiss1.common.WISS1CommonUtil;
 import mockit.Mock;
 import mockit.MockUp;
 
@@ -80,31 +81,16 @@ class W01ConvertFileSelect_test {
     @Test
     public void 正常系_フォルダ内のファイル全てが対象で無いとき_0() {
         new MockUp<Scanner>() {
-            int count = 1;
 
             @Mock
             //１回目入力値="2"
             //2回目="TSVファイル名"
             public String next() {
-                if (count == 1) {
-                    count++;
-                    return "2";
-                }
-                return null;
+                return "2";
             }
-        };
-        new MockUp<Scanner>() {
-            int count = 2;
-
             @Mock
-            //１回目入力値="2"
-            //2回目="TSVファイル名"
             public String nextLine() {
-                if (count == 2) {
-                    count++;
-                    return "division_code_data_20201109175855.tsv";
-                }
-                return null;
+                return "division_code_data_20201109175855.tsv";
             }
         };
         W01ConvertFileSelect convertFileSelect = new W01ConvertFileSelect();
@@ -118,17 +104,10 @@ class W01ConvertFileSelect_test {
     @Test
     public void 異常系_フォルダ内を全て対象の選択肢で異常値を入力されたとき_1() {
         new MockUp<Scanner>() {
-            int count = 1;
-
             @Mock
             //１回目入力値="9"
             public String next() {
-                if (count == 1) {
-                    count++;
-                    return "9";
-                }
-                return null;
-
+                return "9";
             }
         };
         W01ConvertFileSelect convertFileSelect = new W01ConvertFileSelect();
@@ -143,29 +122,15 @@ class W01ConvertFileSelect_test {
     @Test
     public void 正常系_TSVファイルを入力したとき_0() {
         new MockUp<Scanner>() {
-            int count = 1;
             @Mock
             //１回目入力値="2"
             //2回目="TSVファイル名"
             public String next() {
-                if (count == 1) {
-                    count++;
-                    return "2";
-                }
-                return null;
+                return "2";
             }
-        };
-        new MockUp<Scanner>() {
-            int count = 2;
             @Mock
-            //１回目入力値="2"
-            //2回目="TSVファイル名"
             public String nextLine() {
-                if (count == 2) {
-                    count++;
-                    return "division_code_data_20201109175855.tsv";
-                }
-                return null;
+                return "division_code_data_20201109175855.tsv";
             }
         };
         W01ConvertFileSelect convertFileSelect = new W01ConvertFileSelect();
@@ -178,29 +143,15 @@ class W01ConvertFileSelect_test {
     @Test
     public void 正常系_CSVファイルを入力したとき_0() {
         new MockUp<Scanner>() {
-            int count = 1;
             @Mock
             //１回目入力値="2"
             //2回目="TSVファイル名"
             public String next() {
-                if (count == 1) {
-                    count++;
-                    return "2";
-                }
-                return null;
+                return "2";
             }
-        };
-        new MockUp<Scanner>() {
-            int count = 2;
             @Mock
-            //１回目入力値="2"
-            //2回目="TSVファイル名"
             public String nextLine() {
-                if (count == 2) {
-                    count++;
-                    return "division_code_data_20201118162243.csv";
-                }
-                return null;
+                return "division_code_data_20201118162243.csv";
             }
         };
         W01ConvertFileSelect convertFileSelect = new W01ConvertFileSelect();
@@ -213,30 +164,16 @@ class W01ConvertFileSelect_test {
     @Test
     public void 異常系_TSVCSVファイル以外のファイルを入力したとき_1() {
         new MockUp<Scanner>() {
-            int count = 1;
-
             @Mock
             //１回目入力値="2"
             //2回目="TSV,CSVファイル以外のファイル"
             public String next() {
-                if (count == 1) {
-                    count++;
-                    return "2";
-                }
-                return null;
+                return "2";
             }
-        };
-        new MockUp<Scanner>() {
-            int count = 2;
+
             @Mock
-            //１回目入力値="2"
-            //2回目="TSVファイル名"
             public String nextLine() {
-                if (count == 2) {
-                    count++;
-                    return "division_code_data_20201008174724.xlsx";
-                }
-                return null;
+                return "division_code_data_20201008174724.xlsx";
             }
         };
         W01ConvertFileSelect convertFileSelect = new W01ConvertFileSelect();
@@ -264,7 +201,7 @@ class W01ConvertFileSelect_test {
     }
 
 
-      //W01ConvertFileCsvToTsvが障害のため返却値が返ってこない
+    //W01ConvertFileCsvToTsvが障害のため返却値が返ってこない
     @Test
     public void 正常系_フォルダ内一括処理CSVファイルを入力したとき_0() {
         new MockUp<Scanner>() {
@@ -278,8 +215,6 @@ class W01ConvertFileSelect_test {
                     return "1";
                 }
                 return "2";
-
-
             }
         };
         W01ConvertFileSelect convertFileSelect = new W01ConvertFileSelect();
@@ -287,5 +222,26 @@ class W01ConvertFileSelect_test {
         String actual = convertFileSelect.convertFileSelect();
         assertEquals("0", actual);
     }
+
+
+    @Test
+    public void 異常系_一括変換時に出力パスが存在しないとき_1() {
+        new MockUp<Scanner>() {
+            @Mock
+            public String next() {
+                return "1";
+            }
+        };
+        new MockUp<WISS1CommonUtil>() {
+            @Mock
+            public String getProperty(String key) {
+                return "C:\\wiss1workspeas_空\\";
+            }
+        };
+        W01ConvertFileSelect convertFileSelect = new W01ConvertFileSelect();
+        String actual = convertFileSelect.convertFileSelect();
+        assertEquals("1", actual);
+    }
+
 
 }

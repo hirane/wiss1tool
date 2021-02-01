@@ -18,7 +18,6 @@ class W01ConvertFileCsvToTsv_test {
     @SuppressWarnings("static-access")
     @Test
     public void 正常系_CSVファイル名を入力したとき_0() {
-
         //input fileName=CSVファイル名
         String fileName = "division_code_data_20201109175855.csv";
         //input interlockingFlg=true
@@ -189,15 +188,19 @@ class W01ConvertFileCsvToTsv_test {
         //input fileName=CSVファイル名
         String fileName = "division_code_data_20210121074809.csv";
         //input interlockingFlg=true
-        boolean interlockingFlg = true;
-        new MockUp<Scanner>() {
+        boolean interlockingFlg = false;
+        W01ConvertFileCsvToTsv convertFileCsvToTsv = new W01ConvertFileCsvToTsv();
+        String actual = convertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
+        assertEquals("1", actual);
+    }
 
-            @Mock
-            //１回目入力値="2"
-            public String next() {
-                return "2";
-            }
-        };
+
+    @SuppressWarnings("static-access")
+    @Test
+    public void 異常系_コンマ区切りのCSVファイル名を入力したとき_1() {
+        String fileName = "from_csv_to_tsv_2_NG_tsvtype.csv";
+        //input interlockingFlg=true
+        boolean interlockingFlg = false;
         W01ConvertFileCsvToTsv convertFileCsvToTsv = new W01ConvertFileCsvToTsv();
         String actual = convertFileCsvToTsv.convertFileCsvToTsv(fileName, interlockingFlg);
         assertEquals("1", actual);
